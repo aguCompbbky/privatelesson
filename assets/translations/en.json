@@ -1,0 +1,112 @@
+{
+  "app": {
+    "title": "PrivateLesson"
+  },
+  "home": {
+    "title": "Lesson listings",
+    "message": "The project skeleton is ready."
+  },
+  "auth": {
+    "loginTitle": "Sign in",
+    "signInWithGoogle": "Sign in with Google",
+    "signingIn": "Signing in.",
+    "errors": {
+      "cancelled": "Google sign-in was cancelled. You can try again.",
+      "connection": "Could not connect. Check your internet connection and try again.",
+      "authentication": "Your identity could not be verified. Please try signing in again.",
+      "profileLoading": "Your profile could not be loaded. Please try again."
+    },
+    "signOut": "Sign out"
+  },
+  "language": {
+    "switchToEnglish": "Switch to English",
+    "switchToTurkish": "Switch to Turkish"
+  },
+  "profile": {
+    "title": "Complete your profile",
+    "displayName": "Display name",
+    "role": "Your role",
+    "roles": {
+      "student": "Student",
+      "teacher": "Teacher"
+    },
+    "save": "Save profile",
+    "saving": "Saving your profile.",
+    "errors": {
+      "invalidDisplayName": "Please enter your display name.",
+      "invalidUserId": "Your user information is invalid. Please sign out and sign in again.",
+      "loadFailed": "Profile information could not be retrieved. Please try again.",
+      "saveFailed": "Your profile could not be saved. Please try again."
+    }
+  },
+  "listings": {
+    "title": "Lesson listings",
+    "detailTitle": "Listing details",
+    "back": "Back to listings",
+    "search": "Search subject or teacher",
+    "allModes": "All",
+    "deliveryMode": "Delivery mode",
+    "modes": {
+      "inPerson": "In person",
+      "online": "Online",
+      "recordedVideo": "Recorded video"
+    },
+    "certificateOnly": "Only listings with certificates",
+    "activeFilters": "Active filters are applied.",
+    "clearFilters": "Clear filters",
+    "loading": "Loading listings.",
+    "detailLoading": "Loading listing details.",
+    "empty": "No matching listings found.",
+    "retry": "Try again",
+    "errors": {
+      "notFound": "This listing could not be found. You can try again.",
+      "connection": "Could not reach listings. Check your connection and try again.",
+      "storage": "Listing information could not be loaded. Please try again.",
+      "other": "Could not load the listing. Please try again."
+    },
+    "certificateAvailable": "Certificate declared",
+    "certificateNotProvided": "No certificate declared",
+    "description": "Lesson description",
+    "contact": {
+      "title": "Contact the teacher",
+      "whatsApp": "Contact via WhatsApp",
+      "email": "Send email",
+      "pending": "Contact action in progress.",
+      "errors": {
+        "cannotOpenExternalApp": "The external app could not be opened. Copy the contact information to use it.",
+        "invalidContactValue": "The contact information is invalid. You can copy it to check it.",
+        "clipboardFailed": "The contact information could not be copied. Please try again."
+      },
+      "copy": "Copy",
+      "copied": "Contact information copied."
+    },
+    "create": {
+      "title": "Create lesson listing",
+      "subject": "Lesson subject",
+      "hasCertificate": "I have a relevant certificate",
+      "certificateDescription": "Certificate description",
+      "contactNotice": "Your selected contact details will be visible to students in the published listing. Your sign-in email is not shared automatically; select the channels you wish to share and enter your details.",
+      "shareWhatsApp": "Share my WhatsApp number",
+      "whatsAppNumber": "WhatsApp number with country code",
+      "whatsAppHint": "+90 555 000 00 00",
+      "shareEmail": "Share my contact email",
+      "emailAddress": "Listing contact email",
+      "emailHint": "lessons@example.com",
+      "submit": "Publish listing",
+      "submitting": "Publishing listing.",
+      "errors": {
+        "unauthorizedRole": "Only teachers can publish lesson listings.",
+        "invalidTeacherInfo": "Your teacher profile information is invalid. Please sign in again.",
+        "invalidSubject": "Please enter the lesson subject.",
+        "invalidDescription": "Please enter the lesson description.",
+        "missingCertificateDescription": "Please describe the certificate you declared.",
+        "missingContactMethod": "Select at least one contact channel and enter your details.",
+        "invalidWhatsAppNumber": "Enter your selected WhatsApp number with a country code starting with +.",
+        "invalidEmailAddress": "Enter a valid address for your selected contact email.",
+        "notFound": "The listing record needed for publication was not found. Please try again.",
+        "connection": "Could not publish the listing. Check your connection and try again.",
+        "storage": "The listing could not be saved. Please try again."
+      }
+    }
+  }
+}

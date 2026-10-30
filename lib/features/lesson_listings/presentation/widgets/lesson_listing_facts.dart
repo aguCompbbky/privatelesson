@@ -1,0 +1,39 @@
+import 'package:flutter/material.dart';
+import 'package:privatelesson/core/constants/app_dimensions.dart';
+import 'package:privatelesson/core/localization/text_utils.dart';
+import 'package:privatelesson/features/lesson_listings/domain/entities/lesson_delivery_mode.dart';
+import 'package:privatelesson/features/lesson_listings/domain/entities/lesson_listing.dart';
+
+/// Presents a teacher's delivery mode and certificate declaration.
+class LessonListingFacts extends StatelessWidget {
+  /// Creates facts shared by listing cards and the detail view.
+  const LessonListingFacts({required this.listing, super.key});
+
+  /// The teacher-provided listing information.
+  final LessonListing listing;
+
+  @override
+  Widget build(BuildContext context) {
+    Localizations.localeOf(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(listing.teacherName),
+        const SizedBox(height: AppDimensions.sm),
+        Text(
+          switch (listing.deliveryMode) {
+            LessonDeliveryMode.inPerson => TextUtils.inPersonLesson,
+            LessonDeliveryMode.online => TextUtils.onlineLesson,
+            LessonDeliveryMode.recordedVideo => TextUtils.recordedVideoLesson,
+          },
+        ),
+        const SizedBox(height: AppDimensions.sm),
+        Text(
+          listing.certification.hasCertificate
+              ? TextUtils.certificateAvailable
+              : TextUtils.certificateNotProvided,
+        ),
+      ],
+    );
+  }
+}

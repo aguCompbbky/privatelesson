@@ -1,0 +1,11 @@
+# Static analysis rules come from very_good_analysis (ANALYSIS-01).
+# The package is added to dev_dependencies with `flutter pub add`.
+include: package:very_good_analysis/analysis_options.yaml
+
+linter:
+  rules:
+    # EXCEPTION: very_good_analysis enables `cascade_invocations`, which asks
+    # for cascades. PROJECT_SPEC.md STYLE-01 forbids `..` and `?..`, so the
+    # lint is disabled. The ban itself is enforced by
+    # test/architecture/source_rules_test.dart.
+    cascade_invocations: false

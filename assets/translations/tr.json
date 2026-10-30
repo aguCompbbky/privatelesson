@@ -1,0 +1,112 @@
+{
+  "app": {
+    "title": "PrivateLesson"
+  },
+  "home": {
+    "title": "Ders ilanları",
+    "message": "Proje iskeleti hazır."
+  },
+  "auth": {
+    "loginTitle": "Giriş yap",
+    "signInWithGoogle": "Google ile giriş yap",
+    "signingIn": "Giriş yapılıyor.",
+    "errors": {
+      "cancelled": "Google ile giriş iptal edildi. Yeniden deneyebilirsiniz.",
+      "connection": "Bağlantı kurulamadı. İnternet bağlantınızı kontrol edip yeniden deneyin.",
+      "authentication": "Kimliğiniz doğrulanamadı. Lütfen yeniden giriş yapmayı deneyin.",
+      "profileLoading": "Profiliniz yüklenemedi. Lütfen yeniden deneyin."
+    },
+    "signOut": "Çıkış yap"
+  },
+  "language": {
+    "switchToEnglish": "İngilizceye geç",
+    "switchToTurkish": "Türkçeye geç"
+  },
+  "profile": {
+    "title": "Profilini tamamla",
+    "displayName": "Görünen ad",
+    "role": "Rolünüz",
+    "roles": {
+      "student": "Öğrenci",
+      "teacher": "Öğretmen"
+    },
+    "save": "Profili kaydet",
+    "saving": "Profil kaydediliyor.",
+    "errors": {
+      "invalidDisplayName": "Lütfen görünen adınızı girin.",
+      "invalidUserId": "Kullanıcı bilgisi geçersiz. Lütfen çıkış yapıp yeniden giriş yapın.",
+      "loadFailed": "Profil bilgileri alınamadı. Lütfen yeniden deneyin.",
+      "saveFailed": "Profiliniz kaydedilemedi. Lütfen yeniden deneyin."
+    }
+  },
+  "listings": {
+    "title": "Ders ilanları",
+    "detailTitle": "İlan detayı",
+    "back": "İlanlara dön",
+    "search": "Konu veya öğretmen ara",
+    "allModes": "Tümü",
+    "deliveryMode": "Eğitim biçimi",
+    "modes": {
+      "inPerson": "Yüz yüze",
+      "online": "Online",
+      "recordedVideo": "Önceden kaydedilmiş video"
+    },
+    "certificateOnly": "Yalnızca belge belirtilen ilanlar",
+    "activeFilters": "Etkin filtreler uygulanıyor.",
+    "clearFilters": "Filtreleri temizle",
+    "loading": "İlanlar yükleniyor.",
+    "detailLoading": "İlan detayı yükleniyor.",
+    "empty": "Aramanıza uygun ilan bulunamadı.",
+    "retry": "Yeniden dene",
+    "errors": {
+      "notFound": "Bu ilan bulunamadı. Yeniden deneyebilirsiniz.",
+      "connection": "İlanlara ulaşılamadı. Bağlantınızı kontrol edip yeniden deneyin.",
+      "storage": "İlan bilgileri yüklenemedi. Lütfen yeniden deneyin.",
+      "other": "İlan yüklenirken bir hata oluştu. Lütfen yeniden deneyin."
+    },
+    "certificateAvailable": "Yetkinlik belgesi belirtilmiş",
+    "certificateNotProvided": "Yetkinlik belgesi belirtilmemiş",
+    "description": "Ders açıklaması",
+    "contact": {
+      "title": "Öğretmenle iletişim",
+      "whatsApp": "WhatsApp ile iletişim",
+      "email": "E-posta gönder",
+      "pending": "İletişim işlemi sürüyor.",
+      "errors": {
+        "cannotOpenExternalApp": "Harici uygulama açılamadı. İletişim bilgisini kopyalayarak kullanabilirsiniz.",
+        "invalidContactValue": "İletişim bilgisi geçersiz. Bilgiyi kopyalayarak kontrol edebilirsiniz.",
+        "clipboardFailed": "İletişim bilgisi kopyalanamadı. Lütfen yeniden deneyin."
+      },
+      "copy": "Kopyala",
+      "copied": "İletişim bilgisi kopyalandı."
+    },
+    "create": {
+      "title": "Ders ilanı oluştur",
+      "subject": "Ders konusu",
+      "hasCertificate": "Yetkinlik belgem var",
+      "certificateDescription": "Belge açıklaması",
+      "contactNotice": "Seçtiğiniz iletişim bilgileri yayınlanan ilanda öğrencilere açıkça gösterilir. Giriş hesabınızın e-posta adresi otomatik paylaşılmaz; paylaşmak istediğiniz kanalları seçip bilgilerinizi girin.",
+      "shareWhatsApp": "WhatsApp numaramı paylaş",
+      "whatsAppNumber": "Ülke koduyla WhatsApp numarası",
+      "whatsAppHint": "+90 555 000 00 00",
+      "shareEmail": "İletişim e-postamı paylaş",
+      "emailAddress": "İlan iletişim e-postası",
+      "emailHint": "ders@example.com",
+      "submit": "İlanı yayınla",
+      "submitting": "İlan yayınlanıyor.",
+      "errors": {
+        "unauthorizedRole": "Yalnızca öğretmenler ders ilanı yayınlayabilir.",
+        "invalidTeacherInfo": "Öğretmen profil bilgileri geçersiz. Lütfen yeniden giriş yapın.",
+        "invalidSubject": "Lütfen ders konusunu girin.",
+        "invalidDescription": "Lütfen ders açıklamasını girin.",
+        "missingCertificateDescription": "Belge belirttiğiniz için belge açıklamasını da girin.",
+        "missingContactMethod": "En az bir iletişim kanalı seçip bilgilerinizi girin.",
+        "invalidWhatsAppNumber": "Seçtiğiniz WhatsApp numarasını + ile başlayan ülke koduyla girin.",
+        "invalidEmailAddress": "Seçtiğiniz iletişim e-postası için geçerli bir adres girin.",
+        "notFound": "Yayınlama için gerekli ilan kaydı bulunamadı. Lütfen yeniden deneyin.",
+        "connection": "İlan yayınlanamadı. Bağlantınızı kontrol edip yeniden deneyin.",
+        "storage": "İlan kaydedilemedi. Lütfen yeniden deneyin."
+      }
+    }
+  }
+}
