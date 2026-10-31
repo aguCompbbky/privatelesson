@@ -14,9 +14,29 @@
       "cancelled": "Google sign-in was cancelled. You can try again.",
       "connection": "Could not connect. Check your internet connection and try again.",
       "authentication": "Your identity could not be verified. Please try signing in again.",
-      "profileLoading": "Your profile could not be loaded. Please try again."
+      "profileLoading": "Your profile could not be loaded. Please try again.",
+      "invalidDisplayName": "Please enter your name.",
+      "invalidEmail": "Enter a valid email address.",
+      "weakPassword": "Your password must contain at least {minLength} characters.",
+      "passwordMismatch": "The passwords do not match. Please check them.",
+      "invalidCredentials": "The email address or password is incorrect.",
+      "emailAlreadyInUse": "An account already exists for this email address. You can sign in."
     },
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "welcome": "A place to learn and share.",
+    "signInWithEmail": "Sign in with email",
+    "emailLabel": "Email",
+    "emailHint": "you@example.com",
+    "passwordLabel": "Password",
+    "passwordHint": "Enter your password",
+    "confirmPasswordLabel": "Confirm password",
+    "confirmPasswordHint": "Enter your password again",
+    "displayNameHint": "Your full name",
+    "registerTitle": "Create an account",
+    "registerAction": "Register",
+    "registering": "Creating your account.",
+    "goToRegister": "New here? Create an account",
+    "backToLogin": "Back to sign in"
   },
   "language": {
     "switchToEnglish": "Switch to English",

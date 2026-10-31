@@ -10,6 +10,7 @@ import 'package:privatelesson/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:privatelesson/features/auth/presentation/cubit/auth_state.dart';
 import 'package:privatelesson/features/auth/presentation/pages/complete_profile_page.dart';
 import 'package:privatelesson/features/auth/presentation/pages/login_page.dart';
+import 'package:privatelesson/features/auth/presentation/pages/register_page.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/cubit/create_lesson_listing_cubit.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/cubit/lesson_listing_detail_cubit.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/cubit/lesson_listings_cubit.dart';
@@ -57,17 +58,26 @@ abstract final class AppRouter {
                   profile.role != UserRole.teacher =>
             AppRoutes.homePath,
           AuthAuthenticated() =>
-            path == AppRoutes.loginPath || path == AppRoutes.completeProfilePath
+            path == AppRoutes.loginPath ||
+                    path == AppRoutes.registerPath ||
+                    path == AppRoutes.completeProfilePath
                 ? AppRoutes.homePath
                 : null,
           AuthInitial() ||
           AuthLoading() ||
           AuthUnauthenticated() ||
           AuthFailureState() =>
-            path == AppRoutes.loginPath ? null : AppRoutes.loginPath,
+            path == AppRoutes.loginPath || path == AppRoutes.registerPath
+                ? null
+                : AppRoutes.loginPath,
         };
       },
       routes: [
+        GoRoute(
+          path: AppRoutes.registerPath,
+          name: AppRoutes.registerName,
+          builder: (context, state) => const RegisterPage(),
+        ),
         GoRoute(
           path: AppRoutes.loginPath,
           name: AppRoutes.loginName,

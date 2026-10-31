@@ -14,9 +14,29 @@
       "cancelled": "Google ile giriş iptal edildi. Yeniden deneyebilirsiniz.",
       "connection": "Bağlantı kurulamadı. İnternet bağlantınızı kontrol edip yeniden deneyin.",
       "authentication": "Kimliğiniz doğrulanamadı. Lütfen yeniden giriş yapmayı deneyin.",
-      "profileLoading": "Profiliniz yüklenemedi. Lütfen yeniden deneyin."
+      "profileLoading": "Profiliniz yüklenemedi. Lütfen yeniden deneyin.",
+      "invalidDisplayName": "Lütfen adınızı girin.",
+      "invalidEmail": "Geçerli bir e-posta adresi girin.",
+      "weakPassword": "Şifreniz en az {minLength} karakter olmalıdır.",
+      "passwordMismatch": "Şifreler eşleşmiyor. Lütfen kontrol edin.",
+      "invalidCredentials": "E-posta adresi veya şifre yanlış.",
+      "emailAlreadyInUse": "Bu e-posta adresiyle bir hesap zaten var. Giriş yapabilirsiniz."
     },
-    "signOut": "Çıkış yap"
+    "signOut": "Çıkış yap",
+    "welcome": "Öğrenmeye ve paylaşmaya hoş geldiniz.",
+    "signInWithEmail": "E-posta ile giriş yap",
+    "emailLabel": "E-posta",
+    "emailHint": "ornek@eposta.com",
+    "passwordLabel": "Şifre",
+    "passwordHint": "Şifrenizi girin",
+    "confirmPasswordLabel": "Şifre tekrarı",
+    "confirmPasswordHint": "Şifrenizi tekrar girin",
+    "displayNameHint": "Adınız ve soyadınız",
+    "registerTitle": "Hesap oluştur",
+    "registerAction": "Kayıt ol",
+    "registering": "Hesabınız oluşturuluyor.",
+    "goToRegister": "Yeni misiniz? Hesap oluşturun",
+    "backToLogin": "Girişe dön"
   },
   "language": {
     "switchToEnglish": "İngilizceye geç",

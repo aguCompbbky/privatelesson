@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privatelesson/core/constants/app_constants.dart';
 import 'package:privatelesson/features/auth/domain/entities/auth_session.dart';
 import 'package:privatelesson/features/auth/domain/failures/auth_failure.dart';
 import 'package:privatelesson/features/auth/domain/repositories/auth_repository.dart';
+import 'package:privatelesson/features/auth/domain/usecases/register_with_email_use_case.dart';
+import 'package:privatelesson/features/auth/domain/usecases/sign_in_with_email_use_case.dart';
 import 'package:privatelesson/features/auth/domain/usecases/sign_in_with_google_use_case.dart';
 import 'package:privatelesson/features/auth/domain/usecases/sign_out_use_case.dart';
 
@@ -29,6 +32,122 @@ void main() {
         await expectLater(useCase(), throwsA(same(failure)));
         expect(repository.calls, [_RepositoryCall.signIn]);
       });
+    }
+  });
+
+  group('email validation and normalization', () {
+    for (final registering in [false, true]) {
+      for (final email in [
+        '',
+        '  ',
+        'example',
+        'a@',
+        '@example.com',
+        'a@example',
+        'a b@example.com',
+        'a@@example.com',
+      ]) {
+        test('$registering rejects malformed email: $email', () async {
+          final repository = _FakeAuthRepository();
+          await expectLater(
+            _emailOperation(repository, registering, email: email),
+            throwsA(_failure(AuthFailureType.invalidEmail)),
+          );
+          expect(repository.calls, isEmpty);
+        });
+      }
+      for (final password in [
+        '',
+        ' ' * (AppConstants.minPasswordLength - 1),
+        'a' * (AppConstants.minPasswordLength - 1),
+      ]) {
+        test(
+          '$registering rejects short password of ${password.length}',
+          () async {
+            final repository = _FakeAuthRepository();
+            await expectLater(
+              _emailOperation(repository, registering, password: password),
+              throwsA(_failure(AuthFailureType.weakPassword)),
+            );
+            expect(repository.calls, isEmpty);
+          },
+        );
+      }
+      for (final password in [
+        'a' * AppConstants.minPasswordLength,
+        ' secret ',
+      ]) {
+        test(
+          '$registering normalizes identity but preserves $password',
+          () async {
+            final repository = _FakeAuthRepository();
+            expect(
+              await _emailOperation(
+                repository,
+                registering,
+                displayName: '  Ada Lovelace  ',
+                email: '  Ada@Example.com  ',
+                password: password,
+                confirmPassword: password,
+              ),
+              same(_session),
+            );
+            expect(repository.email, 'Ada@Example.com');
+            expect(repository.password, password);
+            expect(repository.displayName, registering ? 'Ada Lovelace' : null);
+            expect(repository.calls, [
+              if (registering)
+                _RepositoryCall.register
+              else
+                _RepositoryCall.email,
+            ]);
+          },
+        );
+      }
+      for (final type in AuthFailureType.values) {
+        test('$registering preserves ${type.name}', () async {
+          final failure = AuthFailure(type);
+          final repository = _FakeAuthRepository(failure: failure);
+          await expectLater(
+            _emailOperation(repository, registering),
+            throwsA(same(failure)),
+          );
+          expect(repository.calls, hasLength(1));
+        });
+      }
+    }
+    for (final name in ['', '  ', '\t\n']) {
+      test('registration rejects blank display name $name first', () async {
+        final repository = _FakeAuthRepository();
+        await expectLater(
+          _emailOperation(
+            repository,
+            true,
+            displayName: name,
+            email: '',
+            password: '',
+          ),
+          throwsA(_failure(AuthFailureType.invalidDisplayName)),
+        );
+        expect(repository.calls, isEmpty);
+      });
+    }
+    for (final confirmation in ['', 'different', 'secret ']) {
+      test(
+        'registration rejects mismatched confirmation $confirmation',
+        () async {
+          final repository = _FakeAuthRepository();
+          await expectLater(
+            _emailOperation(
+              repository,
+              true,
+              confirmPassword: confirmation,
+            ),
+            throwsA(_failure(AuthFailureType.passwordMismatch)),
+          );
+          expect(repository.calls, isEmpty);
+        },
+      );
     }
   });
 
@@ -73,10 +192,14 @@ void main() {
   });
 }
 
-enum _RepositoryCall { signIn, signOut }
+enum _RepositoryCall { signIn, signOut, email, register }
 
 class _FakeAuthRepository implements AuthRepository {
   _FakeAuthRepository({this.failure, this.signOutCompletion});
+
+  String? email;
+  String? password;
+  String? displayName;
 
   /// The domain failure returned by either operation, if configured.
   final AuthFailure? failure;
@@ -98,6 +221,38 @@ class _FakeAuthRepository implements AuthRepository {
     return _session;
   }
 
+  @override
+  Future<AuthSession> signInWithEmail({
+    required String email,
+    required String password,
+  }) async {
+    calls.add(_RepositoryCall.email);
+    this.email = email;
+    this.password = password;
+    final error = failure;
+    if (error != null) {
+      throw error;
+    }
+    return _session;
+  }
+
+  @override
+  Future<AuthSession> registerWithEmail({
+    required String displayName,
+    required String email,
+    required String password,
+  }) async {
+    calls.add(_RepositoryCall.register);
+    this.displayName = displayName;
+    this.email = email;
+    this.password = password;
+    final error = failure;
+    if (error != null) {
+      throw error;
+    }
+    return _session;
+  }
+
   /// Records sign-out and awaits completion or throws the configured failure.
   @override
   Future<void> signOut() async {
@@ -112,3 +267,22 @@ class _FakeAuthRepository implements AuthRepository {
     }
   }
 }
+
+Matcher _failure(AuthFailureType type) =>
+    isA<AuthFailure>().having((value) => value.type, 'type', type);
+
+Future<AuthSession> _emailOperation(
+  AuthRepository repository,
+  bool registering, {
+  String displayName = 'Ada',
+  String email = 'ada@example.com',
+  String password = 'secret',
+  String confirmPassword = 'secret',
+}) => registering
+    ? RegisterWithEmailUseCase(repository)(
+        displayName: displayName,
+        email: email,
+        password: password,
+        confirmPassword: confirmPassword,
+      )
+    : SignInWithEmailUseCase(repository)(email: email, password: password);

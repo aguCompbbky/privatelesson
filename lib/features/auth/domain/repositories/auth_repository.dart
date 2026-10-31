@@ -9,6 +9,19 @@ abstract interface class AuthRepository {
   /// A returned session does not imply that profile completion has occurred.
   Future<AuthSession> signInWithGoogle();
 
+  /// Authenticates an existing email account.
+  Future<AuthSession> signInWithEmail({
+    required String email,
+    required String password,
+  });
+
+  /// Registers an email account and returns its authenticated identity.
+  Future<AuthSession> registerWithEmail({
+    required String displayName,
+    required String email,
+    required String password,
+  });
+
   /// Ends the current session, or throws [AuthFailure] if sign-out fails.
   Future<void> signOut();
 }

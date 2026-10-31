@@ -36,6 +36,7 @@ final class MockAuthDataSource implements AuthDataSource {
   final MockAuthOutcome outcome;
 
   AuthUserDto? _currentUser;
+  final Map<String, ({AuthUserDto user, String password})> _emailAccounts = {};
 
   /// The user stored by a successful sign-in, or null after sign-out.
   AuthUserDto? get currentUser => _currentUser;
@@ -56,6 +57,50 @@ final class MockAuthDataSource implements AuthDataSource {
       case MockAuthOutcome.profileLoadingFailure:
         throw const AuthDataSourceException(AuthDataSourceError.profileLoading);
     }
+  }
+
+  /// Creates a deterministic account that survives signing out.
+  @override
+  Future<AuthUserDto> registerWithEmail({
+    required String displayName,
+    required String email,
+    required String password,
+  }) async {
+    if (outcome != MockAuthOutcome.success) {
+      return signInWithGoogle();
+    }
+    final key = email.trim().toLowerCase();
+    if (_emailAccounts.containsKey(key)) {
+      throw const AuthDataSourceException(
+        AuthDataSourceError.emailAlreadyInUse,
+      );
+    }
+    final user = AuthUserDto(
+      userId: 'email-user-${_emailAccounts.length + 1}',
+      displayName: displayName,
+    );
+    _emailAccounts[key] = (user: user, password: password);
+    _currentUser = user;
+    return user;
+  }
+
+  /// Checks the stored credentials without modifying either password.
+  @override
+  Future<AuthUserDto> signInWithEmail({
+    required String email,
+    required String password,
+  }) async {
+    if (outcome != MockAuthOutcome.success) {
+      return signInWithGoogle();
+    }
+    final account = _emailAccounts[email.trim().toLowerCase()];
+    if (account == null || account.password != password) {
+      throw const AuthDataSourceException(
+        AuthDataSourceError.invalidCredentials,
+      );
+    }
+    _currentUser = account.user;
+    return account.user;
   }
 
   /// Clears the in-memory session; repeated sign-out calls also succeed.

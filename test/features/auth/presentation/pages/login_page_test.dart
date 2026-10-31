@@ -1,13 +1,17 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:privatelesson/app.dart';
+import 'package:privatelesson/core/constants/app_assets.dart';
 import 'package:privatelesson/core/constants/app_constants.dart';
+import 'package:privatelesson/core/constants/app_dimensions.dart';
 import 'package:privatelesson/core/routing/app_routes.dart';
 import 'package:privatelesson/core/widgets/app_button.dart';
+import 'package:privatelesson/core/widgets/app_text_field.dart';
 import 'package:privatelesson/core/widgets/language_switcher_button.dart';
 import 'package:privatelesson/features/auth/domain/entities/auth_session.dart';
 import 'package:privatelesson/features/auth/domain/failures/auth_failure.dart';
@@ -16,6 +20,8 @@ import 'package:privatelesson/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:privatelesson/features/auth/presentation/cubit/auth_state.dart';
 import 'package:privatelesson/features/auth/presentation/pages/complete_profile_page.dart';
 import 'package:privatelesson/features/auth/presentation/pages/login_page.dart';
+import 'package:privatelesson/features/auth/presentation/pages/register_page.dart';
+import 'package:privatelesson/features/auth/presentation/widgets/auth_brand_header.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/pages/lesson_listings_page.dart';
 
 import '../../../../helpers/auth_test_app.dart';
@@ -24,6 +30,12 @@ const _session = AuthSession(userId: 'test-user', displayName: 'Test User');
 const _turkish = Locale('tr');
 const _english = Locale('en');
 const Map<AuthFailureType, String> _failureKeys = {
+  AuthFailureType.invalidDisplayName: 'invalidDisplayName',
+  AuthFailureType.invalidEmail: 'invalidEmail',
+  AuthFailureType.weakPassword: 'weakPassword',
+  AuthFailureType.passwordMismatch: 'passwordMismatch',
+  AuthFailureType.invalidCredentials: 'invalidCredentials',
+  AuthFailureType.emailAlreadyInUse: 'emailAlreadyInUse',
   AuthFailureType.cancelled: 'cancelled',
   AuthFailureType.connection: 'connection',
   AuthFailureType.authentication: 'authentication',
@@ -33,6 +45,81 @@ const Map<AuthFailureType, String> _failureKeys = {
 /// Exercises login with real use cases and cubits over a fake repository.
 void main() {
   configureTestLocalization();
+
+  testWidgets('shows the registered brand asset with an accessible fallback', (
+    tester,
+  ) async {
+    await pumpAuthApp(tester, createTestAuthCubit());
+    expect(find.byType(AuthBrandHeader), findsOneWidget);
+    final logo = tester.widget<Image>(find.byType(Image));
+    expect((logo.image as AssetImage).assetName, AppAssets.appLogo);
+    expect(logo.width, AppDimensions.logoSize);
+    expect(logo.height, AppDimensions.logoSize);
+    expect(logo.fit, BoxFit.cover);
+    expect(logo.semanticLabel, translationSection(_turkish, 'app')['title']);
+    final fallback = logo.errorBuilder!(
+      tester.element(find.byType(Image)),
+      const FormatException('Invalid image'),
+      StackTrace.current,
+    );
+    await tester.pumpWidget(MaterialApp(home: Scaffold(body: fallback)));
+    final emblem = tester.widget<Icon>(find.byIcon(Icons.school_outlined));
+    expect(emblem.semanticLabel, translationSection(_turkish, 'app')['title']);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'email sign-in submits normalized credentials and resolves profile',
+    (tester) async {
+      final repository = _FakeAuthRepository();
+      final cubit = _createCubit(repository);
+      await pumpAuthApp(tester, cubit);
+      await tester.enterText(
+        find.byType(AppTextField).at(0),
+        ' Ada@Example.com ',
+      );
+      await tester.enterText(find.byType(AppTextField).at(1), ' secret ');
+      final button = find.widgetWithText(
+        AppButton,
+        _authCopy(_turkish)['signInWithEmail'] as String,
+      );
+      await tester.ensureVisible(button);
+      await tester.tap(button);
+      await tester.pumpAndSettle();
+      expect(repository.email, 'Ada@Example.com');
+      expect(repository.password, ' secret ');
+      expect(find.byType(CompleteProfilePage), findsOneWidget);
+    },
+  );
+
+  testWidgets('registration navigation clears the current login failure', (
+    tester,
+  ) async {
+    final cubit = createTestAuthCubit();
+    final router = await pumpAuthApp(tester, cubit);
+    final copy = _authCopy(_turkish);
+    final signIn = find.widgetWithText(
+      AppButton,
+      copy['signInWithEmail'] as String,
+    );
+    await tester.ensureVisible(signIn);
+    await tester.tap(signIn);
+    await tester.pumpAndSettle();
+    expect(cubit.state, isA<AuthFailureState>());
+    final register = find.widgetWithText(
+      AppButton,
+      copy['goToRegister'] as String,
+    );
+    await tester.ensureVisible(register);
+    await tester.tap(register);
+    await tester.pumpAndSettle();
+    expect(find.byType(RegisterPage), findsOneWidget);
+    expect(
+      router.routeInformationProvider.value.uri.path,
+      AppRoutes.registerPath,
+    );
+    expect(cubit.state, isA<AuthUnauthenticated>());
+  });
 
   testWidgets('initial state offers sign-in without starting it', (
     tester,
@@ -46,7 +133,7 @@ void main() {
     expect(find.text(copy['signInWithGoogle'] as String), findsOneWidget);
     expect(cubit.state, isA<AuthInitial>());
     expect(repository.signInCalls, 0);
-    expect(tester.widget<AppButton>(find.byType(AppButton)).isLoading, isFalse);
+    expect(tester.widget<AppButton>(_googleButton()).isLoading, isFalse);
     expect(find.byType(CircularProgressIndicator), findsNothing);
   });
 
@@ -57,13 +144,21 @@ void main() {
     await pumpAuthApp(tester, cubit);
 
     expect(cubit.state, isA<AuthUnauthenticated>());
-    expect(find.byType(AppButton), findsOneWidget);
+    expect(_googleButton(), findsOneWidget);
     expect(
-      tester.widget<FilledButton>(find.byType(FilledButton)).onPressed,
+      tester
+          .widget<CupertinoButton>(
+            find.descendant(
+              of: _googleButton(),
+              matching: find.byType(CupertinoButton),
+            ),
+          )
+          .onPressed,
       isNotNull,
     );
 
-    await tester.tap(find.byType(AppButton));
+    await tester.ensureVisible(_googleButton());
+    await tester.tap(_googleButton());
     await tester.pumpAndSettle();
 
     expect(repository.signInCalls, 1);
@@ -79,18 +174,40 @@ void main() {
     final router = await pumpAuthApp(tester, cubit);
     final semantics = tester.ensureSemantics();
     try {
-      await tester.tap(find.byType(AppButton));
+      await tester.ensureVisible(_googleButton());
+      await tester.tap(_googleButton());
       await tester.pump();
 
       expect(repository.signInCalls, 1);
+      expect(
+        tester
+            .widgetList<AppTextField>(find.byType(AppTextField))
+            .every((field) => !field.enabled),
+        isTrue,
+      );
       expect(cubit.state, isA<AuthLoading>());
       expect(
-        tester.widget<AppButton>(find.byType(AppButton)).isLoading,
+        tester
+            .widget<AppButton>(
+              find.byWidgetPredicate(
+                (widget) =>
+                    widget is AppButton &&
+                    widget.variant == AppButtonVariant.primary,
+              ),
+            )
+            .isLoading,
         isTrue,
       );
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
       expect(
-        tester.widget<FilledButton>(find.byType(FilledButton)).onPressed,
+        tester
+            .widget<CupertinoButton>(
+              find.descendant(
+                of: _googleButton(),
+                matching: find.byType(CupertinoButton),
+              ),
+            )
+            .onPressed,
         isNull,
       );
       expect(
@@ -98,7 +215,8 @@ void main() {
         findsOneWidget,
       );
 
-      await tester.tap(find.byType(AppButton));
+      await tester.ensureVisible(_googleButton());
+      await tester.tap(_googleButton());
       expect(repository.signInCalls, 1);
 
       router.go(AppRoutes.homePath);
@@ -125,6 +243,50 @@ void main() {
   });
 
   for (final locale in AppConstants.supportedLocales) {
+    for (final credentials in [
+      (email: 'invalid', password: 'secret', error: 'invalidEmail'),
+      (email: 'ada@example.com', password: 'short', error: 'weakPassword'),
+      (
+        email: 'missing@example.com',
+        password: 'secret',
+        error: 'invalidCredentials',
+      ),
+    ]) {
+      testWidgets(
+        '${locale.languageCode} email login shows ${credentials.error}',
+        (tester) async {
+          final cubit = createTestAuthCubit();
+          final router = await pumpAuthApp(tester, cubit, locale: locale);
+          final copy = _authCopy(locale);
+          await tester.enterText(
+            find.byType(AppTextField).at(0),
+            credentials.email,
+          );
+          await tester.enterText(
+            find.byType(AppTextField).at(1),
+            credentials.password,
+          );
+          final button = find.widgetWithText(
+            AppButton,
+            copy['signInWithEmail'] as String,
+          );
+          await tester.ensureVisible(button);
+          await tester.tap(button);
+          await tester.pumpAndSettle();
+          expect(
+            find.text(
+              (copy['errors'] as Map<String, dynamic>)[credentials.error]
+                  as String,
+            ),
+            findsOneWidget,
+          );
+          expect(
+            router.routeInformationProvider.value.uri.path,
+            AppRoutes.loginPath,
+          );
+        },
+      );
+    }
     for (final entry in _failureKeys.entries) {
       testWidgets('${locale.languageCode} shows only ${entry.value} failure', (
         tester,
@@ -140,7 +302,8 @@ void main() {
           hasLength(AuthFailureType.values.length),
         );
 
-        await tester.tap(find.byType(AppButton));
+        await tester.ensureVisible(_googleButton());
+        await tester.tap(_googleButton());
         await tester.pumpAndSettle();
 
         expect(
@@ -159,7 +322,14 @@ void main() {
         }
         expect(find.byType(CircularProgressIndicator), findsNothing);
         expect(
-          tester.widget<FilledButton>(find.byType(FilledButton)).onPressed,
+          tester
+              .widget<CupertinoButton>(
+                find.descendant(
+                  of: _googleButton(),
+                  matching: find.byType(CupertinoButton),
+                ),
+              )
+              .onPressed,
           isNotNull,
         );
         expect(
@@ -190,11 +360,13 @@ void main() {
     final cubit = _createCubit(repository);
     await pumpAuthApp(tester, cubit);
 
-    await tester.tap(find.byType(AppButton));
+    await tester.ensureVisible(_googleButton());
+    await tester.tap(_googleButton());
     await tester.pumpAndSettle();
     expect(cubit.state, isA<AuthFailureState>());
 
-    await tester.tap(find.byType(AppButton));
+    await tester.ensureVisible(_googleButton());
+    await tester.tap(_googleButton());
     await tester.pumpAndSettle();
 
     expect(repository.signInCalls, 2);
@@ -211,7 +383,8 @@ void main() {
     );
     final cubit = _createCubit(repository);
     await pumpAuthApp(tester, cubit);
-    await tester.tap(find.byType(AppButton));
+    await tester.ensureVisible(_googleButton());
+    await tester.tap(_googleButton());
     await tester.pumpAndSettle();
     final previousState = cubit.state;
     final turkish = _authCopy(_turkish);
@@ -249,7 +422,8 @@ void main() {
         AppRoutes.loginPath,
       );
 
-      await tester.tap(find.byType(AppButton));
+      await tester.ensureVisible(_googleButton());
+      await tester.tap(_googleButton());
       await tester.pumpAndSettle();
 
       expect(find.byType(CompleteProfilePage), findsOneWidget);
@@ -282,7 +456,8 @@ void main() {
         find.byTooltip(_authCopy(_turkish)['signOut'] as String),
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.byType(AppButton));
+      await tester.ensureVisible(_googleButton());
+      await tester.tap(_googleButton());
       await tester.pumpAndSettle();
       expect(find.byType(LessonListingsPage), findsOneWidget);
       expect(find.byType(CompleteProfilePage), findsNothing);
@@ -302,14 +477,32 @@ void main() {
 AuthCubit _createCubit(AuthRepository repository) =>
     createTestAuthCubit(authRepository: repository);
 
-Map<String, dynamic> _authCopy(Locale locale) =>
-    translationSection(locale, 'auth');
+Map<String, dynamic> _authCopy(Locale locale) {
+  final copy = translationSection(locale, 'auth');
+  final errors = copy['errors'] as Map<String, dynamic>;
+  errors['weakPassword'] = (errors['weakPassword'] as String).replaceAll(
+    '{minLength}',
+    AppConstants.minPasswordLength.toString(),
+  );
+  return copy;
+}
+
+Finder _googleButton() => find.byWidgetPredicate(
+  (widget) =>
+      widget is AppButton &&
+      AppConstants.supportedLocales.any(
+        (locale) => widget.label == _authCopy(locale)['signInWithGoogle'],
+      ),
+);
 
 class _FakeAuthRepository implements AuthRepository {
   _FakeAuthRepository({Future<AuthSession> Function()? onSignIn})
     : _onSignIn = onSignIn;
 
   final Future<AuthSession> Function()? _onSignIn;
+
+  String? email;
+  String? password;
 
   /// Counts calls made through the real cubit and sign-in use case.
   int signInCalls = 0;
@@ -320,6 +513,23 @@ class _FakeAuthRepository implements AuthRepository {
     signInCalls += 1;
     return _onSignIn?.call() ?? Future<AuthSession>.value(_session);
   }
+
+  @override
+  Future<AuthSession> signInWithEmail({
+    required String email,
+    required String password,
+  }) {
+    this.email = email;
+    this.password = password;
+    return signInWithGoogle();
+  }
+
+  @override
+  Future<AuthSession> registerWithEmail({
+    required String displayName,
+    required String email,
+    required String password,
+  }) => signInWithGoogle();
 
   /// Completes sign-out without accessing a provider.
   @override

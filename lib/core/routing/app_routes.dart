@@ -1,5 +1,11 @@
 /// Route names and paths used by the application router.
 abstract final class AppRoutes {
+  /// Path of the email registration route.
+  static const String registerPath = '/register';
+
+  /// Name of the email registration route.
+  static const String registerName = 'register';
+
   /// Path of the login route.
   static const String loginPath = '/login';
 

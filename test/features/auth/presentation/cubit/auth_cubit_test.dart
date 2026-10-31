@@ -1,6 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privatelesson/core/di/app_dependencies.dart';
+import 'package:privatelesson/core/di/backend_provider.dart';
+import 'package:privatelesson/features/auth/data/datasources/mock_auth_data_source.dart';
+import 'package:privatelesson/features/auth/data/datasources/mock_user_profile_data_source.dart';
+import 'package:privatelesson/features/auth/data/dtos/auth_user_dto.dart';
+import 'package:privatelesson/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:privatelesson/features/auth/data/repositories/user_profile_repository_impl.dart';
 import 'package:privatelesson/features/auth/domain/entities/auth_session.dart';
 import 'package:privatelesson/features/auth/domain/entities/user_profile.dart';
 import 'package:privatelesson/features/auth/domain/entities/user_role.dart';
@@ -9,7 +16,9 @@ import 'package:privatelesson/features/auth/domain/failures/profile_failure.dart
 import 'package:privatelesson/features/auth/domain/repositories/auth_repository.dart';
 import 'package:privatelesson/features/auth/domain/repositories/user_profile_repository.dart';
 import 'package:privatelesson/features/auth/domain/usecases/get_user_profile_use_case.dart';
+import 'package:privatelesson/features/auth/domain/usecases/register_with_email_use_case.dart';
 import 'package:privatelesson/features/auth/domain/usecases/save_user_profile_use_case.dart';
+import 'package:privatelesson/features/auth/domain/usecases/sign_in_with_email_use_case.dart';
 import 'package:privatelesson/features/auth/domain/usecases/sign_in_with_google_use_case.dart';
 import 'package:privatelesson/features/auth/domain/usecases/sign_out_use_case.dart';
 import 'package:privatelesson/features/auth/presentation/cubit/auth_cubit.dart';
@@ -33,6 +42,181 @@ void main() {
     expect(repository.calls, isEmpty);
     await cubit.close();
     expect(await states, isEmpty);
+  });
+
+  group('email authentication', () {
+    for (final registering in [false, true]) {
+      for (final profile in <UserProfile?>[null, _profile]) {
+        test(
+          '$registering resolves profile presence ${profile != null}',
+          () async {
+            final profiles = _FakeProfileRepository(profile: profile);
+            final cubit = _createCubit(
+              _FakeAuthRepository(),
+              profiles: profiles,
+            );
+            final states = cubit.stream.toList();
+            await _emailOperation(cubit, registering);
+            expect(profiles.requestedUserIds, [_session.userId]);
+            expect(
+              cubit.state,
+              profile == null
+                  ? _incompleteProfile()
+                  : _authenticatedWithSession(),
+            );
+            await cubit.close();
+            expect(await states, [
+              isA<AuthLoading>(),
+              if (profile == null)
+                _incompleteProfile()
+              else
+                _authenticatedWithSession(),
+            ]);
+          },
+        );
+      }
+      for (final type in AuthFailureType.values) {
+        test(
+          '$registering emits ${type.name} and clearFailure resets it',
+          () async {
+            final profiles = _FakeProfileRepository();
+            final cubit = _createCubit(
+              _FakeAuthRepository(
+                onSignIn: () => Future<AuthSession>.error(AuthFailure(type)),
+              ),
+              profiles: profiles,
+            );
+            await _emailOperation(cubit, registering);
+            expect(cubit.state, _failureWithType(type));
+            expect(profiles.requestedUserIds, isEmpty);
+            cubit.clearFailure();
+            expect(cubit.state, isA<AuthUnauthenticated>());
+          },
+        );
+      }
+      test('$registering maps profile failures', () async {
+        final cubit = _createCubit(
+          _FakeAuthRepository(),
+          profiles: _FakeProfileRepository(
+            onRead: (_) async {
+              throw const ProfileFailure(ProfileFailureType.loadFailed);
+            },
+          ),
+        );
+        await _emailOperation(cubit, registering);
+        expect(cubit.state, _failureWithType(AuthFailureType.profileLoading));
+      });
+      test(
+        '$registering blocks concurrent actions and clearing while loading',
+        () async {
+          final completion = Completer<AuthSession>();
+          final repository = _FakeAuthRepository(
+            onSignIn: () => completion.future,
+          );
+          final cubit = _createCubit(repository);
+          final result = _emailOperation(cubit, registering);
+          await _emailOperation(cubit, false);
+          await _emailOperation(cubit, true);
+          await cubit.signInWithGoogle();
+          await cubit.signOut();
+          cubit.clearFailure();
+          expect(cubit.state, isA<AuthLoading>());
+          expect(repository.calls, hasLength(1));
+          completion.complete(_session);
+          await result;
+        },
+      );
+      test('$registering restores state after an unexpected failure', () async {
+        final error = StateError('unexpected');
+        final cubit = _createCubit(
+          _FakeAuthRepository(onSignIn: () => throw error),
+        );
+        final previous = cubit.state;
+        await expectLater(
+          _emailOperation(cubit, registering),
+          throwsA(same(error)),
+        );
+        expect(cubit.state, same(previous));
+      });
+    }
+    test('validation failures do not call the repository', () async {
+      final repository = _FakeAuthRepository();
+      final cubit = _createCubit(repository);
+      await cubit.signInWithEmail(email: '', password: 'secret');
+      expect(cubit.state, _failureWithType(AuthFailureType.invalidEmail));
+      await cubit.registerWithEmail(
+        displayName: '',
+        email: 'ada@example.com',
+        password: 'secret',
+        confirmPassword: 'secret',
+      );
+      expect(cubit.state, _failureWithType(AuthFailureType.invalidDisplayName));
+      expect(repository.calls, isEmpty);
+    });
+    test('clearFailure leaves every non-failure state unchanged', () async {
+      final cubit = _createCubit(
+        _FakeAuthRepository(),
+        profiles: _FakeProfileRepository(profile: null),
+      );
+      for (final prepare in <Future<void> Function()>[
+        () async {},
+        () => _emailOperation(cubit, true),
+        cubit.completeProfile,
+        cubit.signOut,
+      ]) {
+        await prepare();
+        final previous = cubit.state;
+        cubit.clearFailure();
+        expect(cubit.state, same(previous));
+      }
+    });
+    for (final role in UserRole.values) {
+      test(
+        'registration and subsequent email login retain ${role.name}',
+        () async {
+          final repository = AuthRepositoryImpl(
+            MockAuthDataSource(
+              user: const AuthUserDto(userId: 'google', displayName: 'Google'),
+            ),
+          );
+          final cubit = _createCubit(
+            repository,
+            profiles: UserProfileRepositoryImpl(MockUserProfileDataSource()),
+          );
+          await _emailOperation(cubit, true);
+          final session = (cubit.state as AuthProfileIncomplete).session;
+          cubit.selectRole(role);
+          await cubit.completeProfile();
+          await cubit.signOut();
+          await _emailOperation(cubit, false);
+          final state = cubit.state as AuthAuthenticated;
+          expect(state.session.userId, session.userId);
+          expect(state.profile.role, role);
+        },
+      );
+    }
+    test(
+      'composition shares accounts and profiles across cubit lifetimes',
+      () async {
+        final first = AppDependencies.createAuthCubit(
+          provider: BackendProvider.mock,
+        );
+        await _emailOperation(first, true);
+        first.selectRole(UserRole.teacher);
+        await first.completeProfile();
+        final profile = (first.state as AuthAuthenticated).profile;
+        await first.signOut();
+        await first.close();
+        final second = AppDependencies.createAuthCubit(
+          provider: BackendProvider.mock,
+        );
+        addTearDown(second.close);
+        await _emailOperation(second, false);
+        final state = second.state as AuthAuthenticated;
+        expect(state.profile.userId, profile.userId);
+        expect(state.profile.role, UserRole.teacher);
+      },
+    );
   });
 
   group('signInWithGoogle', () {
@@ -697,6 +881,8 @@ AuthCubit _createCubit(
   final profileRepository = profiles ?? _FakeProfileRepository();
   final cubit = AuthCubit(
     signInWithGoogleUseCase: SignInWithGoogleUseCase(repository),
+    signInWithEmailUseCase: SignInWithEmailUseCase(repository),
+    registerWithEmailUseCase: RegisterWithEmailUseCase(repository),
     signOutUseCase: SignOutUseCase(repository),
     getUserProfileUseCase: GetUserProfileUseCase(profileRepository),
     saveUserProfileUseCase: SaveUserProfileUseCase(profileRepository),
@@ -735,6 +921,19 @@ class _FakeAuthRepository implements AuthRepository {
     calls.add(_RepositoryCall.signIn);
     return _onSignIn?.call() ?? Future<AuthSession>.value(_session);
   }
+
+  @override
+  Future<AuthSession> signInWithEmail({
+    required String email,
+    required String password,
+  }) => signInWithGoogle();
+
+  @override
+  Future<AuthSession> registerWithEmail({
+    required String displayName,
+    required String email,
+    required String password,
+  }) => signInWithGoogle();
 
   /// Records sign-out and returns the configured outcome or completes.
   @override
@@ -779,3 +978,12 @@ class _FakeProfileRepository implements UserProfileRepository {
     return stored;
   }
 }
+
+Future<void> _emailOperation(AuthCubit cubit, bool registering) => registering
+    ? cubit.registerWithEmail(
+        displayName: 'Ada',
+        email: 'ada@example.com',
+        password: 'secret',
+        confirmPassword: 'secret',
+      )
+    : cubit.signInWithEmail(email: 'ada@example.com', password: 'secret');

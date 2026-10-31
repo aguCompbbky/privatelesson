@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:privatelesson/core/constants/app_dimensions.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
+import 'package:privatelesson/core/widgets/app_gradient_background.dart';
 import 'package:privatelesson/core/widgets/language_switcher_button.dart';
 import 'package:privatelesson/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:privatelesson/features/auth/presentation/cubit/auth_state.dart';
@@ -21,17 +22,19 @@ class CompleteProfilePage extends StatelessWidget {
         title: Text(TextUtils.completeProfileTitle),
         actions: const [LanguageSwitcherButton(), SignOutButton()],
       ),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(AppDimensions.md),
-            child: BlocBuilder<AuthCubit, AuthState>(
-              builder: (context, state) => state is AuthProfileIncomplete
-                  ? CompleteProfileForm(
-                      key: ValueKey(state.session.userId),
-                      state: state,
-                    )
-                  : const SizedBox.shrink(),
+      body: AppGradientBackground(
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppDimensions.md),
+              child: BlocBuilder<AuthCubit, AuthState>(
+                builder: (context, state) => state is AuthProfileIncomplete
+                    ? CompleteProfileForm(
+                        key: ValueKey(state.session.userId),
+                        state: state,
+                      )
+                    : const SizedBox.shrink(),
+              ),
             ),
           ),
         ),

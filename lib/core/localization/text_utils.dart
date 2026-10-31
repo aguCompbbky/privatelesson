@@ -1,10 +1,78 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:privatelesson/core/constants/app_constants.dart';
 
 /// Single access point for translated user-facing texts.
 ///
 /// Every getter resolves the translation when it is called, so a language
 /// change is reflected the next time the widget tree rebuilds.
 abstract final class TextUtils {
+  /// Welcome subtitle beneath the application logo.
+  static String get welcome => _AppKeys.welcome.tr();
+
+  /// Label of the email sign-in action.
+  static String get signInWithEmail => _AppKeys.signInWithEmail.tr();
+
+  /// Label of the authentication email input.
+  static String get emailLabel => _AppKeys.emailLabel.tr();
+
+  /// Example email address for authentication forms.
+  static String get emailHint => _AppKeys.emailHint.tr();
+
+  /// Label of the password input.
+  static String get passwordLabel => _AppKeys.passwordLabel.tr();
+
+  /// Prompt for entering a password.
+  static String get passwordHint => _AppKeys.passwordHint.tr();
+
+  /// Label of the password confirmation input.
+  static String get confirmPasswordLabel => _AppKeys.confirmPasswordLabel.tr();
+
+  /// Prompt for repeating the registration password.
+  static String get confirmPasswordHint => _AppKeys.confirmPasswordHint.tr();
+
+  /// Prompt for the registration display name.
+  static String get displayNameHint => _AppKeys.displayNameHint.tr();
+
+  /// Title of the registration page.
+  static String get registerTitle => _AppKeys.registerTitle.tr();
+
+  /// Label of the registration submission action.
+  static String get registerAction => _AppKeys.registerAction.tr();
+
+  /// Accessible status while registration is pending.
+  static String get registering => _AppKeys.registering.tr();
+
+  /// Action opening the registration page.
+  static String get goToRegister => _AppKeys.goToRegister.tr();
+
+  /// Action returning to the sign-in page.
+  static String get backToLogin => _AppKeys.backToLogin.tr();
+
+  /// Validation message for a blank registration name.
+  static String get authInvalidDisplayName =>
+      _AppKeys.authInvalidDisplayName.tr();
+
+  /// Validation message for an invalid email address.
+  static String get authInvalidEmail => _AppKeys.authInvalidEmail.tr();
+
+  /// Validation message using the configured minimum password length.
+  static String get authWeakPassword => _AppKeys.authWeakPassword.tr(
+    namedArgs: {
+      'minLength': AppConstants.minPasswordLength.toString(),
+    },
+  );
+
+  /// Validation message for a mismatched password confirmation.
+  static String get authPasswordMismatch => _AppKeys.authPasswordMismatch.tr();
+
+  /// Message for an incorrect email or password.
+  static String get authInvalidCredentials =>
+      _AppKeys.authInvalidCredentials.tr();
+
+  /// Message for an email address that is already registered.
+  static String get authEmailAlreadyInUse =>
+      _AppKeys.authEmailAlreadyInUse.tr();
+
   /// Application title.
   static String get appTitle => _AppKeys.appTitle.tr();
 
@@ -275,6 +343,26 @@ abstract final class TextUtils {
 }
 
 abstract final class _AppKeys {
+  static const String welcome = 'auth.welcome';
+  static const String signInWithEmail = 'auth.signInWithEmail';
+  static const String emailLabel = 'auth.emailLabel';
+  static const String emailHint = 'auth.emailHint';
+  static const String passwordLabel = 'auth.passwordLabel';
+  static const String passwordHint = 'auth.passwordHint';
+  static const String confirmPasswordLabel = 'auth.confirmPasswordLabel';
+  static const String confirmPasswordHint = 'auth.confirmPasswordHint';
+  static const String displayNameHint = 'auth.displayNameHint';
+  static const String registerTitle = 'auth.registerTitle';
+  static const String registerAction = 'auth.registerAction';
+  static const String registering = 'auth.registering';
+  static const String goToRegister = 'auth.goToRegister';
+  static const String backToLogin = 'auth.backToLogin';
+  static const String authInvalidDisplayName = 'auth.errors.invalidDisplayName';
+  static const String authInvalidEmail = 'auth.errors.invalidEmail';
+  static const String authWeakPassword = 'auth.errors.weakPassword';
+  static const String authPasswordMismatch = 'auth.errors.passwordMismatch';
+  static const String authInvalidCredentials = 'auth.errors.invalidCredentials';
+  static const String authEmailAlreadyInUse = 'auth.errors.emailAlreadyInUse';
   static const String appTitle = 'app.title';
   static const String homeTitle = 'home.title';
   static const String homeMessage = 'home.message';

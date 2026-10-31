@@ -9,6 +9,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:privatelesson/core/constants/app_assets.dart';
 import 'package:privatelesson/core/constants/app_constants.dart';
+import 'package:privatelesson/core/di/app_dependencies.dart';
+import 'package:privatelesson/core/di/backend_provider.dart';
 import 'package:privatelesson/core/routing/app_router.dart';
 import 'package:privatelesson/core/theme/theme.dart';
 import 'package:privatelesson/features/auth/data/datasources/mock_auth_data_source.dart';
@@ -19,7 +21,9 @@ import 'package:privatelesson/features/auth/data/repositories/user_profile_repos
 import 'package:privatelesson/features/auth/domain/repositories/auth_repository.dart';
 import 'package:privatelesson/features/auth/domain/repositories/user_profile_repository.dart';
 import 'package:privatelesson/features/auth/domain/usecases/get_user_profile_use_case.dart';
+import 'package:privatelesson/features/auth/domain/usecases/register_with_email_use_case.dart';
 import 'package:privatelesson/features/auth/domain/usecases/save_user_profile_use_case.dart';
+import 'package:privatelesson/features/auth/domain/usecases/sign_in_with_email_use_case.dart';
 import 'package:privatelesson/features/auth/domain/usecases/sign_in_with_google_use_case.dart';
 import 'package:privatelesson/features/auth/domain/usecases/sign_out_use_case.dart';
 import 'package:privatelesson/features/auth/presentation/cubit/auth_cubit.dart';
@@ -33,9 +37,11 @@ const _preferencesChannel = MethodChannel(
   'plugins.flutter.io/shared_preferences',
 );
 
-/// Initializes localization without native preference services.
+/// Initializes localization and selects mock backends without native services.
 void configureTestLocalization() {
   final binding = TestWidgetsFlutterBinding.ensureInitialized();
+  setUp(() => AppDependencies.activeProvider = BackendProvider.mock);
+  tearDown(() => AppDependencies.activeProvider = null);
   setUpAll(() async {
     binding.defaultBinaryMessenger.setMockMethodCallHandler(
       _preferencesChannel,
@@ -64,6 +70,8 @@ AuthCubit createTestAuthCubit({
       UserProfileRepositoryImpl(MockUserProfileDataSource());
   final cubit = AuthCubit(
     signInWithGoogleUseCase: SignInWithGoogleUseCase(auth),
+    signInWithEmailUseCase: SignInWithEmailUseCase(auth),
+    registerWithEmailUseCase: RegisterWithEmailUseCase(auth),
     signOutUseCase: SignOutUseCase(auth),
     getUserProfileUseCase: GetUserProfileUseCase(profiles),
     saveUserProfileUseCase: SaveUserProfileUseCase(profiles),

@@ -9,6 +9,19 @@ abstract interface class AuthDataSource {
   /// Malformed user payloads may throw [FormatException].
   Future<AuthUserDto> signInWithGoogle();
 
+  /// Authenticates an existing email account.
+  Future<AuthUserDto> signInWithEmail({
+    required String email,
+    required String password,
+  });
+
+  /// Registers an email account and returns its authenticated identity.
+  Future<AuthUserDto> registerWithEmail({
+    required String displayName,
+    required String email,
+    required String password,
+  });
+
   /// Ends the provider session, including when no session is active.
   ///
   /// Adapters report known provider failures as [AuthDataSourceException].

@@ -2,6 +2,9 @@ import 'package:flutter/widgets.dart';
 
 /// Technical application constants.
 abstract final class AppConstants {
+  /// Minimum accepted length for an authentication password.
+  static const int minPasswordLength = 6;
+
   /// Line count for single-line form inputs.
   static const int singleLineInput = 1;
 

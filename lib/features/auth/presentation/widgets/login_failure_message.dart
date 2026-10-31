@@ -15,6 +15,12 @@ class LoginFailureMessage extends StatelessWidget {
     Localizations.localeOf(context);
     final theme = Theme.of(context);
     final message = switch (type) {
+      AuthFailureType.invalidDisplayName => TextUtils.authInvalidDisplayName,
+      AuthFailureType.invalidEmail => TextUtils.authInvalidEmail,
+      AuthFailureType.weakPassword => TextUtils.authWeakPassword,
+      AuthFailureType.passwordMismatch => TextUtils.authPasswordMismatch,
+      AuthFailureType.invalidCredentials => TextUtils.authInvalidCredentials,
+      AuthFailureType.emailAlreadyInUse => TextUtils.authEmailAlreadyInUse,
       AuthFailureType.cancelled => TextUtils.signInCancelled,
       AuthFailureType.connection => TextUtils.signInConnectionError,
       AuthFailureType.authentication => TextUtils.signInAuthenticationError,

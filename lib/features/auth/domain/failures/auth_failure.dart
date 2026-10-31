@@ -1,5 +1,23 @@
 /// The distinct authentication failures callers can handle.
 enum AuthFailureType {
+  /// The registration display name is blank.
+  invalidDisplayName,
+
+  /// The email address is blank or malformed.
+  invalidEmail,
+
+  /// The password is shorter than the required minimum.
+  weakPassword,
+
+  /// The confirmation does not match the password.
+  passwordMismatch,
+
+  /// The email or password is incorrect.
+  invalidCredentials,
+
+  /// An account already exists for this email address.
+  emailAlreadyInUse,
+
   /// The user cancelled the sign-in flow.
   cancelled,
 

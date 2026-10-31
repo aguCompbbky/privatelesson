@@ -43,7 +43,7 @@ class _AppState extends State<App> {
       value: _authCubit,
       child: MaterialApp.router(
         onGenerateTitle: (context) => TextUtils.appTitle,
-        theme: AppTheme.light,
+        theme: AppTheme.monochrome,
         routerConfig: _router,
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,

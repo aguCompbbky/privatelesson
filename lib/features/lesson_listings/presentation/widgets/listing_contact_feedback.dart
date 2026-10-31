@@ -47,6 +47,7 @@ class ListingContactFeedback extends StatelessWidget {
             const SizedBox(height: AppDimensions.sm),
             Text(feedback.value),
             AppButton(
+              variant: AppButtonVariant.secondary,
               label: TextUtils.copyContact,
               onPressed: switch (feedback.channel) {
                 ContactChannel.whatsApp => cubit.copyWhatsApp,

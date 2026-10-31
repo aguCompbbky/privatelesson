@@ -92,6 +92,7 @@ class _ListingsFiltersState extends State<ListingsFilters> {
           const SizedBox(height: AppDimensions.sm),
           Text(TextUtils.activeListingFilters),
           AppButton(
+            variant: AppButtonVariant.secondary,
             label: TextUtils.clearListingFilters,
             onPressed: cubit.clearFilters,
           ),

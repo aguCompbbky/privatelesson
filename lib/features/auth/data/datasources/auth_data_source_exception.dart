@@ -1,5 +1,11 @@
 /// The failures an authentication provider adapter can report.
 enum AuthDataSourceError {
+  /// The email or password is incorrect.
+  invalidCredentials,
+
+  /// The email address is already registered.
+  emailAlreadyInUse,
+
   /// The provider's sign-in flow was cancelled.
   cancelled,
 

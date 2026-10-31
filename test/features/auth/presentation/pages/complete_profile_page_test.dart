@@ -41,7 +41,7 @@ void main() {
       expect(find.byType(LoginPage), findsOneWidget);
     }
 
-    await tester.tap(find.byType(AppButton));
+    await _tapGoogle(tester, _turkish);
     await tester.pumpAndSettle();
 
     expect(
@@ -88,7 +88,7 @@ void main() {
       ) async {
         final cubit = createTestAuthCubit();
         final router = await pumpAuthApp(tester, cubit);
-        await tester.tap(find.byType(AppButton));
+        await _tapGoogle(tester, _turkish);
         await tester.pumpAndSettle();
         final roles = _profileCopy(_turkish)['roles'] as Map<String, dynamic>;
         await tester.tap(find.text(roles[role.name] as String));
@@ -130,7 +130,7 @@ void main() {
         final subscription = cubit.stream.listen(states.add);
         addTearDown(subscription.cancel);
 
-        await tester.tap(find.byType(AppButton));
+        await _tapGoogle(tester, _english);
         await tester.pumpAndSettle();
 
         expect(states, [isA<AuthLoading>(), isA<AuthAuthenticated>()]);
@@ -149,7 +149,7 @@ void main() {
     ) async {
       final cubit = createTestAuthCubit();
       await pumpAuthApp(tester, cubit);
-      await tester.tap(find.byType(AppButton));
+      await _tapGoogle(tester, _turkish);
       await tester.pumpAndSettle();
       final turkish = _profileCopy(_turkish);
       final english = _profileCopy(_english);
@@ -340,4 +340,13 @@ class _ProfileRepository implements UserProfileRepository {
     saveCalls += 1;
     return onSave(profile);
   }
+}
+
+Future<void> _tapGoogle(WidgetTester tester, Locale locale) async {
+  final button = find.widgetWithText(
+    AppButton,
+    _authCopy(locale)['signInWithGoogle'] as String,
+  );
+  await tester.ensureVisible(button);
+  await tester.tap(button);
 }

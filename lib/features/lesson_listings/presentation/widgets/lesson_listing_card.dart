@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:privatelesson/core/constants/app_dimensions.dart';
+import 'package:privatelesson/core/constants/color_constant.dart';
 import 'package:privatelesson/core/routing/app_routes.dart';
 import 'package:privatelesson/features/lesson_listings/domain/entities/lesson_listing.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/widgets/lesson_listing_facts.dart';
@@ -14,24 +15,39 @@ class LessonListingCard extends StatelessWidget {
   final LessonListing listing;
 
   @override
-  Widget build(BuildContext context) => Card(
-    child: InkWell(
-      onTap: () => context.goNamed(
-        AppRoutes.listingDetailName,
-        pathParameters: {AppRoutes.listingIdParam: listing.id},
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.all(AppDimensions.xs),
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppDimensions.radiusLg),
+        boxShadow: AppColors.cardShadow,
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppDimensions.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              listing.subject,
-              style: Theme.of(context).textTheme.titleLarge,
+      child: Card(
+        margin: EdgeInsets.zero,
+        child: Ink(
+          decoration: const BoxDecoration(gradient: AppColors.surfaceGradient),
+          child: InkWell(
+            splashFactory: NoSplash.splashFactory,
+            borderRadius: BorderRadius.circular(AppDimensions.radiusLg),
+            onTap: () => context.goNamed(
+              AppRoutes.listingDetailName,
+              pathParameters: {AppRoutes.listingIdParam: listing.id},
             ),
-            const SizedBox(height: AppDimensions.sm),
-            LessonListingFacts(listing: listing),
-          ],
+            child: Padding(
+              padding: const EdgeInsets.all(AppDimensions.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    listing.subject,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: AppDimensions.sm),
+                  LessonListingFacts(listing: listing),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     ),
