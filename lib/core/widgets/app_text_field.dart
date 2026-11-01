@@ -14,6 +14,8 @@ class AppTextField extends StatelessWidget {
     this.obscureText = false,
     this.enabled = true,
     this.maxLines = AppConstants.singleLineInput,
+    this.prefixIcon,
+    this.suffixIcon,
     this.onChanged,
     super.key,
   });
@@ -45,6 +47,12 @@ class AppTextField extends StatelessWidget {
   /// Number of visible text lines, defaulting to a single-line field.
   final int maxLines;
 
+  /// Optional icon or widget shown at the beginning of the field.
+  final Widget? prefixIcon;
+
+  /// Optional icon or widget shown at the end of the field.
+  final Widget? suffixIcon;
+
   /// Called whenever the text changes.
   final ValueChanged<String>? onChanged;
 
@@ -62,6 +70,8 @@ class AppTextField extends StatelessWidget {
         labelText: label,
         hintText: hint,
         errorText: errorText,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
       ),
     );
   }

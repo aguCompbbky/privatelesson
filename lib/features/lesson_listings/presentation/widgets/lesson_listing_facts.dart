@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:privatelesson/core/constants/app_dimensions.dart';
+import 'package:privatelesson/core/constants/color_constant.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
 import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/features/lesson_listings/domain/entities/lesson_delivery_mode.dart';
@@ -19,20 +20,70 @@ class LessonListingFacts extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppText.body(listing.teacherName),
-        const SizedBox(height: AppDimensions.sm),
-        AppText.label(
-          switch (listing.deliveryMode) {
-            LessonDeliveryMode.inPerson => TextUtils.inPersonLesson,
-            LessonDeliveryMode.online => TextUtils.onlineLesson,
-            LessonDeliveryMode.recordedVideo => TextUtils.recordedVideoLesson,
-          },
+        Row(
+          children: [
+            const Icon(
+              Icons.person_outline,
+              size: AppDimensions.iconSizeSm,
+              color: AppColors.silver,
+            ),
+            const SizedBox(width: AppDimensions.xs),
+            Expanded(
+              child: AppText.body(
+                listing.teacherName,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: AppDimensions.sm),
-        AppText.label(
-          listing.certification.hasCertificate
-              ? TextUtils.certificateAvailable
-              : TextUtils.certificateNotProvided,
+        Wrap(
+          spacing: AppDimensions.md,
+          runSpacing: AppDimensions.xs,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  switch (listing.deliveryMode) {
+                    LessonDeliveryMode.inPerson => Icons.place_outlined,
+                    LessonDeliveryMode.online => Icons.computer_outlined,
+                    LessonDeliveryMode.recordedVideo =>
+                      Icons.video_library_outlined,
+                  },
+                  size: AppDimensions.iconSizeXs,
+                  color: AppColors.pewter,
+                ),
+                const SizedBox(width: AppDimensions.xs),
+                AppText.caption(
+                  switch (listing.deliveryMode) {
+                    LessonDeliveryMode.inPerson => TextUtils.inPersonLesson,
+                    LessonDeliveryMode.online => TextUtils.onlineLesson,
+                    LessonDeliveryMode.recordedVideo =>
+                      TextUtils.recordedVideoLesson,
+                  },
+                ),
+              ],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  listing.certification.hasCertificate
+                      ? Icons.verified_outlined
+                      : Icons.remove_circle_outline,
+                  size: AppDimensions.iconSizeXs,
+                  color: AppColors.pewter,
+                ),
+                const SizedBox(width: AppDimensions.xs),
+                AppText.caption(
+                  listing.certification.hasCertificate
+                      ? TextUtils.certificateAvailable
+                      : TextUtils.certificateNotProvided,
+                ),
+              ],
+            ),
+          ],
         ),
       ],
     );

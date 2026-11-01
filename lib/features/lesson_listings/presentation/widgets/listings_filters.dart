@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:privatelesson/core/constants/app_dimensions.dart';
+import 'package:privatelesson/core/constants/color_constant.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
 import 'package:privatelesson/core/widgets/app_button.dart';
 import 'package:privatelesson/core/widgets/app_control_label.dart';
@@ -53,11 +56,33 @@ class _ListingsFiltersState extends State<ListingsFilters> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppTextField(
-          label: TextUtils.listingsSearch,
-          controller: _searchController,
-          textInputAction: TextInputAction.search,
-          onChanged: cubit.updateSearchQuery,
+        ValueListenableBuilder<TextEditingValue>(
+          valueListenable: _searchController,
+          builder: (context, value, child) => AppTextField(
+            label: TextUtils.listingsSearch,
+            controller: _searchController,
+            textInputAction: TextInputAction.search,
+            prefixIcon: const Icon(
+              Icons.search,
+              size: AppDimensions.iconSizeMd,
+              color: AppColors.silver,
+            ),
+            suffixIcon: value.text.isNotEmpty
+                ? IconButton(
+                    icon: const Icon(
+                      Icons.clear,
+                      size: AppDimensions.iconSizeSm,
+                      color: AppColors.silver,
+                    ),
+                    tooltip: TextUtils.clearListingFilters,
+                    onPressed: () {
+                      _searchController.clear();
+                      unawaited(cubit.updateSearchQuery(''));
+                    },
+                  )
+                : null,
+            onChanged: cubit.updateSearchQuery,
+          ),
         ),
         const SizedBox(height: AppDimensions.md),
         AppText.subhead(TextUtils.deliveryModeLabel),

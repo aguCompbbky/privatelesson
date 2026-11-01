@@ -205,4 +205,28 @@ void main() {
     expect(cubit.state.filter.searchQuery, 'Matematik');
     expect(find.text('Matematik'), findsWidgets);
   });
+
+  testWidgets(
+    'search bar shows search icon and clears query via suffix clear button',
+    (tester) async {
+      final cubit = testListingsCubit();
+      await pumpListingsApp(tester, createListings: () => cubit);
+
+      expect(find.byIcon(Icons.search), findsOneWidget);
+      expect(find.byIcon(Icons.clear), findsNothing);
+
+      await tester.enterText(find.byType(AppTextField), 'Matematik');
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.clear), findsOneWidget);
+      expect(cubit.state.listings, hasLength(1));
+
+      await tester.tap(find.byIcon(Icons.clear));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.clear), findsNothing);
+      expect(cubit.state.filter.searchQuery, isEmpty);
+      expect(cubit.state.listings, hasLength(4));
+    },
+  );
 }

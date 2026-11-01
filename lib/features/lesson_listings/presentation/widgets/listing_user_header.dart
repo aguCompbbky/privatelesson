@@ -27,7 +27,7 @@ class ListingUserHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppText.subhead(state.profile.displayName),
+          AppText.headline(state.profile.displayName),
           const SizedBox(height: AppDimensions.xs),
           AppText.label(
             switch (state.profile.role) {

@@ -20,26 +20,51 @@ class LessonListingCard extends StatelessWidget {
     padding: const EdgeInsets.all(AppDimensions.xs),
     child: DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppDimensions.radiusLg),
+        borderRadius: BorderRadius.circular(AppDimensions.radiusCard),
         boxShadow: AppColors.cardShadow,
       ),
       child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppDimensions.radiusCard),
+          side: const BorderSide(
+            color: AppColors.slate,
+            width: AppDimensions.hairlineWidth,
+          ),
+        ),
         margin: EdgeInsets.zero,
         child: Ink(
-          decoration: const BoxDecoration(gradient: AppColors.surfaceGradient),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(
+              Radius.circular(AppDimensions.radiusCard),
+            ),
+            gradient: AppColors.surfaceGradient,
+          ),
           child: InkWell(
             splashFactory: NoSplash.splashFactory,
-            borderRadius: BorderRadius.circular(AppDimensions.radiusLg),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusCard),
             onTap: () => context.goNamed(
               AppRoutes.listingDetailName,
               pathParameters: {AppRoutes.listingIdParam: listing.id},
             ),
             child: Padding(
-              padding: const EdgeInsets.all(AppDimensions.md),
+              padding: const EdgeInsets.all(AppDimensions.cardPadding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppText.title(listing.subject),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: AppText.title(listing.subject),
+                      ),
+                      const SizedBox(width: AppDimensions.sm),
+                      const Icon(
+                        Icons.chevron_right,
+                        size: AppDimensions.iconSizeMd,
+                        color: AppColors.pewter,
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: AppDimensions.sm),
                   LessonListingFacts(listing: listing),
                 ],

@@ -69,6 +69,13 @@ abstract final class AppTheme {
         width: AppDimensions.hairlineWidth,
       ),
     );
+    final cardShape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(AppDimensions.radiusCard),
+      side: const BorderSide(
+        color: AppColors.slate,
+        width: AppDimensions.hairlineWidth,
+      ),
+    );
     final typography = Typography.material2021(
       platform: defaultTargetPlatform,
       colorScheme: colorScheme,
@@ -172,7 +179,7 @@ abstract final class AppTheme {
         color: AppColors.charcoal,
         surfaceTintColor: AppColors.transparent,
         elevation: AppDimensions.flatElevation,
-        shape: panelShape,
+        shape: cardShape,
         margin: const EdgeInsets.all(AppDimensions.xs),
         clipBehavior: Clip.antiAlias,
       ),
@@ -257,6 +264,8 @@ abstract final class AppTheme {
         fillColor: AppColors.charcoal,
         hoverColor: AppColors.transparent,
         focusColor: AppColors.graphite,
+        prefixIconColor: AppColors.silver,
+        suffixIconColor: AppColors.silver,
         contentPadding: const EdgeInsets.all(AppDimensions.md),
         labelStyle: textTheme.labelMedium,
         hintStyle: textTheme.bodyMedium?.copyWith(color: AppColors.pewter),

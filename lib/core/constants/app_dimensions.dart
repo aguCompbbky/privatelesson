@@ -83,8 +83,23 @@ abstract final class AppDimensions {
   /// Default corner radius of inputs and buttons.
   static const double radiusMd = 12;
 
+  /// Dedicated corner radius of listing cards.
+  static const double radiusCard = 16;
+
   /// Corner radius of elevated panels and cards.
   static const double radiusLg = 24;
+
+  /// Compact internal padding for cards.
+  static const double cardPadding = 14;
+
+  /// Extra small icon size.
+  static const double iconSizeXs = 14;
+
+  /// Small icon size.
+  static const double iconSizeSm = 16;
+
+  /// Medium icon size.
+  static const double iconSizeMd = 20;
 
   /// Radius that keeps action buttons and chips pill-shaped.
   static const double radiusPill = 999;
