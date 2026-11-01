@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:privatelesson/core/constants/app_dimensions.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/features/lesson_listings/domain/entities/lesson_delivery_mode.dart';
 import 'package:privatelesson/features/lesson_listings/domain/entities/lesson_listing.dart';
 
@@ -18,9 +19,9 @@ class LessonListingFacts extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(listing.teacherName),
+        AppText.body(listing.teacherName),
         const SizedBox(height: AppDimensions.sm),
-        Text(
+        AppText.label(
           switch (listing.deliveryMode) {
             LessonDeliveryMode.inPerson => TextUtils.inPersonLesson,
             LessonDeliveryMode.online => TextUtils.onlineLesson,
@@ -28,7 +29,7 @@ class LessonListingFacts extends StatelessWidget {
           },
         ),
         const SizedBox(height: AppDimensions.sm),
-        Text(
+        AppText.label(
           listing.certification.hasCertificate
               ? TextUtils.certificateAvailable
               : TextUtils.certificateNotProvided,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:privatelesson/core/constants/app_dimensions.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/cubit/lesson_listings_cubit.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/cubit/lesson_listings_state.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/widgets/lesson_listing_card.dart';
@@ -36,13 +37,13 @@ class ListingsResults extends StatelessWidget {
     if (state.listings.isEmpty) {
       return SliverToBoxAdapter(
         child: Padding(
-          padding: const EdgeInsets.all(AppDimensions.lg),
-          child: Text(TextUtils.noListings),
+          padding: AppDimensions.screenPadding(context),
+          child: AppText.body(TextUtils.noListings),
         ),
       );
     }
     return SliverPadding(
-      padding: const EdgeInsets.all(AppDimensions.md),
+      padding: AppDimensions.screenPadding(context),
       sliver: SliverList.builder(
         itemCount: state.listings.length,
         itemBuilder: (context, index) =>

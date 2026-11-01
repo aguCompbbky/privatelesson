@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:privatelesson/core/constants/app_dimensions.dart';
 import 'package:privatelesson/core/constants/color_constant.dart';
 import 'package:privatelesson/core/routing/app_routes.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/features/lesson_listings/domain/entities/lesson_listing.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/widgets/lesson_listing_facts.dart';
 
@@ -38,10 +39,7 @@ class LessonListingCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    listing.subject,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
+                  AppText.title(listing.subject),
                   const SizedBox(height: AppDimensions.sm),
                   LessonListingFacts(listing: listing),
                 ],

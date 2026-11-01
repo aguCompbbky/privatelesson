@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:privatelesson/core/constants/app_dimensions.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/cubit/create_lesson_listing_cubit.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/cubit/create_lesson_listing_state.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/widgets/listing_form_text_field.dart';
@@ -21,16 +22,18 @@ class ListingContactFields extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(TextUtils.createListingContactNotice),
+        AppText.body(TextUtils.createListingContactNotice),
         const SizedBox(height: AppDimensions.sm),
         SwitchListTile(
-          title: Text(TextUtils.createListingShareWhatsApp),
+          title: AppText.body(TextUtils.createListingShareWhatsApp),
+          contentPadding: EdgeInsets.zero,
           value: state.shareWhatsApp,
           onChanged: state.isSubmitting
               ? null
               : (value) => cubit.setShareWhatsApp(value: value),
         ),
-        if (state.shareWhatsApp)
+        if (state.shareWhatsApp) ...[
+          const SizedBox(height: AppDimensions.sm),
           ListingFormTextField(
             value: state.whatsAppNumber,
             label: TextUtils.createListingWhatsAppNumber,
@@ -39,14 +42,18 @@ class ListingContactFields extends StatelessWidget {
             enabled: !state.isSubmitting,
             onChanged: cubit.updateWhatsAppNumber,
           ),
+          const SizedBox(height: AppDimensions.sm),
+        ],
         SwitchListTile(
-          title: Text(TextUtils.createListingShareEmail),
+          title: AppText.body(TextUtils.createListingShareEmail),
+          contentPadding: EdgeInsets.zero,
           value: state.shareEmail,
           onChanged: state.isSubmitting
               ? null
               : (value) => cubit.setShareEmail(value: value),
         ),
-        if (state.shareEmail)
+        if (state.shareEmail) ...[
+          const SizedBox(height: AppDimensions.sm),
           ListingFormTextField(
             value: state.emailAddress,
             label: TextUtils.createListingEmailAddress,
@@ -55,6 +62,7 @@ class ListingContactFields extends StatelessWidget {
             enabled: !state.isSubmitting,
             onChanged: cubit.updateEmailAddress,
           ),
+        ],
       ],
     );
   }

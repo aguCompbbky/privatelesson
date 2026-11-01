@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:privatelesson/core/constants/app_dimensions.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
 import 'package:privatelesson/core/widgets/app_button.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/features/lesson_listings/domain/failures/external_contact_failure.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/cubit/lesson_listing_detail_cubit.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/cubit/lesson_listing_detail_state.dart';
@@ -28,12 +29,12 @@ class ListingContactFeedback extends StatelessWidget {
           if (feedback.isPending)
             Semantics(
               liveRegion: true,
-              child: Text(TextUtils.contactOpening),
+              child: AppText.body(TextUtils.contactOpening),
             ),
           if (failure != null) ...[
             Semantics(
               liveRegion: true,
-              child: Text(
+              child: AppText.body(
                 switch (failure) {
                   ExternalContactFailureType.cannotOpenExternalApp =>
                     TextUtils.contactCannotOpen,
@@ -45,7 +46,8 @@ class ListingContactFeedback extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppDimensions.sm),
-            Text(feedback.value),
+            AppText.body(feedback.value),
+            const SizedBox(height: AppDimensions.sm),
             AppButton(
               variant: AppButtonVariant.secondary,
               label: TextUtils.copyContact,
@@ -58,7 +60,7 @@ class ListingContactFeedback extends StatelessWidget {
           if (feedback.isCopied)
             Semantics(
               liveRegion: true,
-              child: Text(TextUtils.contactCopied),
+              child: AppText.body(TextUtils.contactCopied),
             ),
         ],
       ),

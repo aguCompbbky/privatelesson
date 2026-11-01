@@ -1,9 +1,62 @@
-/// Shared spacing, sizing and radius values.
+import 'package:flutter/widgets.dart';
+
+/// Shared spacing, typography, sizing and radius values.
 abstract final class AppDimensions {
+  /// Page and brand headline size.
+  static const double fontSizeHeadline = 24;
+
+  /// Page bar and card title size.
+  static const double fontSizeTitle = 20;
+
+  /// Section heading size.
+  static const double fontSizeSubhead = 16;
+
+  /// Comfortable size for descriptions and input text.
+  static const double fontSizeBody = 15;
+
+  /// Size for field and control labels.
+  static const double fontSizeLabel = 14;
+
+  /// Size for supporting metadata.
+  static const double fontSizeCaption = 12;
+
+  /// Gently tightened headline tracking.
+  static const double letterSpacingHeadline = -0.4;
+
+  /// Gently tightened title tracking.
+  static const double letterSpacingTitle = -0.3;
+
+  /// Gently tightened section heading tracking.
+  static const double letterSpacingSubhead = -0.2;
+
+  /// Gently tightened reading text tracking.
+  static const double letterSpacingBody = -0.1;
+
+  /// Comfortable line spacing for reading text and labels.
+  static const double lineHeightBody = 1.45;
+
+  /// Compact but readable line spacing for headings.
+  static const double lineHeightHeading = 1.25;
+
+  /// Proportion of screen width used for horizontal page padding.
+  static const double screenPaddingRatio = 0.05;
+
+  /// Subtle horizontal gutters, bounded for small and large screens.
+  static double responsiveHorizontal(BuildContext context) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    return (screenWidth * screenPaddingRatio).clamp(md, lg);
+  }
+
+  /// Balanced page padding shared by scrollable screen bodies.
+  static EdgeInsets screenPadding(BuildContext context) => EdgeInsets.symmetric(
+    horizontal: responsiveHorizontal(context),
+    vertical: md,
+  );
+
   /// Width and height of the authentication brand mark.
   static const double logoSize = 88;
 
-  /// Soft squircle corners of the brand mark.
+  /// Soft circular corners of the brand mark.
   static const double logoRadius = 24;
 
   /// Size of the fallback brand emblem.
@@ -46,13 +99,13 @@ abstract final class AppDimensions {
   static const double hairlineWidth = 0.5;
 
   /// Slightly tightened tracking for page and card titles.
-  static const double titleLetterSpacing = -0.3;
+  static const double titleLetterSpacing = letterSpacingTitle;
 
   /// Tracking for short action labels.
   static const double labelLetterSpacing = 0.2;
 
   /// Font size of shared action labels.
-  static const double buttonFontSize = 16;
+  static const double buttonFontSize = fontSizeSubhead;
 
   /// Blur radius of a card's soft shadow.
   static const double cardShadowBlur = 24;

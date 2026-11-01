@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/features/auth/domain/failures/profile_failure.dart';
 
 /// Explains each validation or storage failure in the current language.
@@ -13,7 +14,6 @@ class ProfileFailureMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Localizations.localeOf(context);
-    final theme = Theme.of(context);
     final message = switch (type) {
       ProfileFailureType.invalidDisplayName =>
         TextUtils.profileInvalidDisplayName,
@@ -23,11 +23,9 @@ class ProfileFailureMessage extends StatelessWidget {
     };
     return Semantics(
       liveRegion: true,
-      child: Text(
+      child: AppText.body(
         message,
-        style: theme.textTheme.bodyMedium?.copyWith(
-          color: theme.colorScheme.error,
-        ),
+        color: Theme.of(context).colorScheme.error,
       ),
     );
   }

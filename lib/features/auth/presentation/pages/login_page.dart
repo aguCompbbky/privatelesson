@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:privatelesson/core/constants/app_dimensions.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/core/widgets/language_switcher_button.dart';
 import 'package:privatelesson/features/auth/presentation/widgets/auth_brand_header.dart';
 import 'package:privatelesson/features/auth/presentation/widgets/auth_page_body.dart';
@@ -16,7 +17,7 @@ class LoginPage extends StatelessWidget {
     Localizations.localeOf(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(TextUtils.loginTitle),
+        title: AppText.title(TextUtils.loginTitle),
         actions: const [LanguageSwitcherButton()],
       ),
       body: const AuthPageBody(

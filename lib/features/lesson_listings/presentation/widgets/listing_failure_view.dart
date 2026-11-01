@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:privatelesson/core/constants/app_dimensions.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
 import 'package:privatelesson/core/widgets/app_button.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/features/lesson_listings/domain/failures/lesson_listing_failure.dart';
 
 /// Displays a localized domain failure and a retry action.
@@ -23,12 +24,12 @@ class ListingFailureView extends StatelessWidget {
   Widget build(BuildContext context) {
     Localizations.localeOf(context);
     return Padding(
-      padding: const EdgeInsets.all(AppDimensions.md),
+      padding: AppDimensions.screenPadding(context),
       child: Column(
         children: [
           Semantics(
             liveRegion: true,
-            child: Text(
+            child: AppText.body(
               switch (type) {
                 LessonListingFailureType.notFound => TextUtils.listingNotFound,
                 LessonListingFailureType.connection =>

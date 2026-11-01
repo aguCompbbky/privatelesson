@@ -62,8 +62,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '965115337021',
     projectId: 'privatelesson-c2aea',
     storageBucket: 'privatelesson-c2aea.firebasestorage.app',
-    androidClientId: '965115337021-i9iaaqmmcijchnt1ht7o5gm28s32jauq.apps.googleusercontent.com',
-    iosClientId: '965115337021-j07pkugtfrajll847jqbikdib297q49u.apps.googleusercontent.com',
+    androidClientId:
+        '965115337021-i9iaaqmmcijchnt1ht7o5gm28s32jauq.apps.googleusercontent.com',
+    iosClientId:
+        '965115337021-j07pkugtfrajll847jqbikdib297q49u.apps.googleusercontent.com',
     iosBundleId: 'com.privatelesson.privatelesson',
   );
 }

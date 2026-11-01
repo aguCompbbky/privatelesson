@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/features/lesson_listings/domain/failures/lesson_listing_failure.dart';
 
 /// Announces a distinct localized explanation for each creation failure.
@@ -37,9 +38,9 @@ class CreateListingFailureMessage extends StatelessWidget {
     };
     return Semantics(
       liveRegion: true,
-      child: Text(
+      child: AppText.body(
         message,
-        style: TextStyle(color: Theme.of(context).colorScheme.error),
+        color: Theme.of(context).colorScheme.error,
       ),
     );
   }

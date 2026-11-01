@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/features/auth/domain/failures/auth_failure.dart';
 
 /// Displays a translated message for each authentication failure category.
@@ -13,7 +14,6 @@ class LoginFailureMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Localizations.localeOf(context);
-    final theme = Theme.of(context);
     final message = switch (type) {
       AuthFailureType.invalidDisplayName => TextUtils.authInvalidDisplayName,
       AuthFailureType.invalidEmail => TextUtils.authInvalidEmail,
@@ -29,11 +29,9 @@ class LoginFailureMessage extends StatelessWidget {
 
     return Semantics(
       liveRegion: true,
-      child: Text(
+      child: AppText.body(
         message,
-        style: theme.textTheme.bodyMedium?.copyWith(
-          color: theme.colorScheme.error,
-        ),
+        color: Theme.of(context).colorScheme.error,
       ),
     );
   }

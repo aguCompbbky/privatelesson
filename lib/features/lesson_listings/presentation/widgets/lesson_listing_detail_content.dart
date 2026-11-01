@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:privatelesson/core/constants/app_dimensions.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/features/lesson_listings/domain/entities/lesson_listing.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/cubit/lesson_listing_detail_state.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/widgets/lesson_listing_facts.dart';
@@ -27,27 +28,21 @@ class LessonListingDetailContent extends StatelessWidget {
     final certificate = listing.certification;
     final description = certificate.certificateDescription;
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppDimensions.md),
+      padding: AppDimensions.screenPadding(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            listing.subject,
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
+          AppText.headline(listing.subject),
           const SizedBox(height: AppDimensions.md),
           LessonListingFacts(listing: listing),
           if (certificate.hasCertificate && description != null) ...[
             const SizedBox(height: AppDimensions.sm),
-            Text(description),
+            AppText.body(description),
           ],
           const SizedBox(height: AppDimensions.lg),
-          Text(
-            TextUtils.lessonDescription,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          AppText.subhead(TextUtils.lessonDescription),
           const SizedBox(height: AppDimensions.sm),
-          Text(listing.description),
+          AppText.body(listing.description),
           const SizedBox(height: AppDimensions.lg),
           ListingContactSection(
             contact: listing.contact,

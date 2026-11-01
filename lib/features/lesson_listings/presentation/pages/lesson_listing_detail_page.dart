@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
 import 'package:privatelesson/core/routing/app_routes.dart';
 import 'package:privatelesson/core/widgets/app_gradient_background.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/core/widgets/language_switcher_button.dart';
 import 'package:privatelesson/features/auth/presentation/widgets/sign_out_button.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/cubit/lesson_listing_detail_cubit.dart';
@@ -27,7 +28,7 @@ class LessonListingDetailPage extends StatelessWidget {
           tooltip: TextUtils.backToListings,
           onPressed: () => context.go(AppRoutes.homePath),
         ),
-        title: Text(TextUtils.listingDetailTitle),
+        title: AppText.title(TextUtils.listingDetailTitle),
         actions: const [LanguageSwitcherButton(), SignOutButton()],
       ),
       body: AppGradientBackground(

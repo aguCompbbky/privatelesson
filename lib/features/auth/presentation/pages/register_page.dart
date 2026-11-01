@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
 import 'package:privatelesson/core/routing/app_routes.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/core/widgets/language_switcher_button.dart';
 import 'package:privatelesson/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:privatelesson/features/auth/presentation/cubit/auth_state.dart';
@@ -20,7 +21,7 @@ class RegisterPage extends StatelessWidget {
     final isLoading = context.watch<AuthCubit>().state is AuthLoading;
     return Scaffold(
       appBar: AppBar(
-        title: Text(TextUtils.registerTitle),
+        title: AppText.title(TextUtils.registerTitle),
         leading: IconButton(
           tooltip: TextUtils.backToLogin,
           icon: const Icon(Icons.arrow_back),

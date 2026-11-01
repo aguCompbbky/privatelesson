@@ -5,6 +5,7 @@ import 'package:privatelesson/core/constants/app_dimensions.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
 import 'package:privatelesson/core/routing/app_routes.dart';
 import 'package:privatelesson/core/widgets/app_button.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/features/auth/domain/entities/user_role.dart';
 import 'package:privatelesson/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:privatelesson/features/auth/presentation/cubit/auth_state.dart';
@@ -22,13 +23,13 @@ class ListingUserHeader extends StatelessWidget {
       return const SizedBox.shrink();
     }
     return Padding(
-      padding: const EdgeInsets.all(AppDimensions.md),
+      padding: AppDimensions.screenPadding(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(state.profile.displayName),
+          AppText.subhead(state.profile.displayName),
           const SizedBox(height: AppDimensions.xs),
-          Text(
+          AppText.label(
             switch (state.profile.role) {
               UserRole.student => TextUtils.studentRole,
               UserRole.teacher => TextUtils.teacherRole,

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:privatelesson/core/constants/app_dimensions.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
 import 'package:privatelesson/core/widgets/app_gradient_background.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/core/widgets/language_switcher_button.dart';
 import 'package:privatelesson/features/auth/presentation/widgets/sign_out_button.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/cubit/lesson_listings_cubit.dart';
@@ -21,7 +22,7 @@ class LessonListingsPage extends StatelessWidget {
     Localizations.localeOf(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(TextUtils.listingsTitle),
+        title: AppText.title(TextUtils.listingsTitle),
         actions: const [LanguageSwitcherButton(), SignOutButton()],
       ),
       body: AppGradientBackground(
@@ -32,7 +33,7 @@ class LessonListingsPage extends StatelessWidget {
                 const SliverToBoxAdapter(child: ListingUserHeader()),
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.all(AppDimensions.md),
+                    padding: AppDimensions.screenPadding(context),
                     child: ListingsFilters(filter: state.filter),
                   ),
                 ),

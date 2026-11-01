@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:privatelesson/core/constants/app_dimensions.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
 import 'package:privatelesson/core/widgets/app_button.dart';
+import 'package:privatelesson/core/widgets/app_control_label.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/core/widgets/app_text_field.dart';
 import 'package:privatelesson/features/lesson_listings/domain/entities/lesson_delivery_mode.dart';
 import 'package:privatelesson/features/lesson_listings/domain/entities/lesson_listing_filter.dart';
@@ -58,19 +60,20 @@ class _ListingsFiltersState extends State<ListingsFilters> {
           onChanged: cubit.updateSearchQuery,
         ),
         const SizedBox(height: AppDimensions.md),
-        Text(TextUtils.deliveryModeLabel),
+        AppText.subhead(TextUtils.deliveryModeLabel),
+        const SizedBox(height: AppDimensions.sm),
         Wrap(
           spacing: AppDimensions.sm,
           runSpacing: AppDimensions.xs,
           children: [
             ChoiceChip(
-              label: Text(TextUtils.allDeliveryModes),
+              label: AppControlLabel(TextUtils.allDeliveryModes),
               selected: filter.deliveryMode == null,
               onSelected: (_) => cubit.selectDeliveryMode(null),
             ),
             for (final mode in LessonDeliveryMode.values)
               ChoiceChip(
-                label: Text(
+                label: AppControlLabel(
                   switch (mode) {
                     LessonDeliveryMode.inPerson => TextUtils.inPersonLesson,
                     LessonDeliveryMode.online => TextUtils.onlineLesson,
@@ -83,14 +86,16 @@ class _ListingsFiltersState extends State<ListingsFilters> {
               ),
           ],
         ),
+        const SizedBox(height: AppDimensions.sm),
         FilterChip(
-          label: Text(TextUtils.certificateOnly),
+          label: AppControlLabel(TextUtils.certificateOnly),
           selected: filter.hasCertificateOnly,
           onSelected: (value) => cubit.setCertificateOnly(value: value),
         ),
         if (filter.hasActiveFilters) ...[
           const SizedBox(height: AppDimensions.sm),
-          Text(TextUtils.activeListingFilters),
+          AppText.caption(TextUtils.activeListingFilters),
+          const SizedBox(height: AppDimensions.sm),
           AppButton(
             variant: AppButtonVariant.secondary,
             label: TextUtils.clearListingFilters,

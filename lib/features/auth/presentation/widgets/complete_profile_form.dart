@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:privatelesson/core/constants/app_dimensions.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
 import 'package:privatelesson/core/widgets/app_button.dart';
+import 'package:privatelesson/core/widgets/app_control_label.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/core/widgets/app_text_field.dart';
 import 'package:privatelesson/features/auth/domain/entities/user_role.dart';
 import 'package:privatelesson/features/auth/presentation/cubit/auth_cubit.dart';
@@ -63,17 +65,17 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
           onChanged: cubit.updateDisplayName,
         ),
         const SizedBox(height: AppDimensions.md),
-        Text(TextUtils.roleLabel),
+        AppText.label(TextUtils.roleLabel),
         const SizedBox(height: AppDimensions.sm),
         SegmentedButton<UserRole>(
           segments: [
             ButtonSegment(
               value: UserRole.student,
-              label: Text(TextUtils.studentRole),
+              label: AppControlLabel(TextUtils.studentRole),
             ),
             ButtonSegment(
               value: UserRole.teacher,
-              label: Text(TextUtils.teacherRole),
+              label: AppControlLabel(TextUtils.teacherRole),
             ),
           ],
           selected: {state.selectedRole},

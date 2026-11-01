@@ -48,3 +48,7 @@ app.*.map.json
 .env
 .env.*
 !.env.example
+
+# Seed database script its not needed in production
+/tool/seed_database.dart
+/test/tool/seed_database_test.dart

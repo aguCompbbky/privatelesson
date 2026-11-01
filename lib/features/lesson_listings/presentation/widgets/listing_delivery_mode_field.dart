@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:privatelesson/core/constants/app_dimensions.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
+import 'package:privatelesson/core/widgets/app_control_label.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/features/lesson_listings/domain/entities/lesson_delivery_mode.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/cubit/create_lesson_listing_cubit.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/cubit/create_lesson_listing_state.dart';
@@ -21,14 +23,15 @@ class ListingDeliveryModeField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(TextUtils.deliveryModeLabel),
+        AppText.subhead(TextUtils.deliveryModeLabel),
+        const SizedBox(height: AppDimensions.sm),
         Wrap(
           spacing: AppDimensions.sm,
           runSpacing: AppDimensions.xs,
           children: [
             for (final mode in LessonDeliveryMode.values)
               ChoiceChip(
-                label: Text(
+                label: AppControlLabel(
                   switch (mode) {
                     LessonDeliveryMode.inPerson => TextUtils.inPersonLesson,
                     LessonDeliveryMode.online => TextUtils.onlineLesson,

@@ -74,17 +74,65 @@ abstract final class AppTheme {
       colorScheme: colorScheme,
     );
     final baseTextTheme = typography.englishLike.merge(typography.white);
+    final headline = baseTextTheme.headlineSmall?.copyWith(
+      color: AppColors.platinum,
+      fontSize: AppDimensions.fontSizeHeadline,
+      fontWeight: FontWeight.w600,
+      letterSpacing: AppDimensions.letterSpacingHeadline,
+      height: AppDimensions.lineHeightHeading,
+    );
+    final title = baseTextTheme.titleLarge?.copyWith(
+      color: AppColors.platinum,
+      fontSize: AppDimensions.fontSizeTitle,
+      fontWeight: FontWeight.w600,
+      letterSpacing: AppDimensions.letterSpacingTitle,
+      height: AppDimensions.lineHeightHeading,
+    );
+    final subhead = baseTextTheme.titleMedium?.copyWith(
+      color: AppColors.silver,
+      fontSize: AppDimensions.fontSizeSubhead,
+      fontWeight: FontWeight.w600,
+      letterSpacing: AppDimensions.letterSpacingSubhead,
+      height: AppDimensions.lineHeightBody,
+    );
+    final body = baseTextTheme.bodyMedium?.copyWith(
+      color: AppColors.platinum,
+      fontSize: AppDimensions.fontSizeBody,
+      fontWeight: FontWeight.w400,
+      letterSpacing: AppDimensions.letterSpacingBody,
+      height: AppDimensions.lineHeightBody,
+    );
+    final label = baseTextTheme.labelMedium?.copyWith(
+      color: AppColors.silver,
+      fontSize: AppDimensions.fontSizeLabel,
+      fontWeight: FontWeight.w500,
+      letterSpacing: AppDimensions.letterSpacingBody,
+      height: AppDimensions.lineHeightBody,
+    );
+    final caption = baseTextTheme.bodySmall?.copyWith(
+      color: AppColors.pewter,
+      fontSize: AppDimensions.fontSizeCaption,
+      fontWeight: FontWeight.w400,
+      letterSpacing: AppDimensions.letterSpacingBody,
+      height: AppDimensions.lineHeightBody,
+    );
     final textTheme = baseTextTheme.copyWith(
-      titleLarge: baseTextTheme.titleLarge?.copyWith(
-        color: AppColors.platinum,
-        fontWeight: FontWeight.w600,
-        letterSpacing: AppDimensions.titleLetterSpacing,
-      ),
-      labelLarge: baseTextTheme.labelLarge?.copyWith(
+      headlineLarge: headline,
+      headlineMedium: headline,
+      headlineSmall: headline,
+      titleLarge: title,
+      titleMedium: subhead,
+      titleSmall: label,
+      bodyLarge: body,
+      bodyMedium: body,
+      bodySmall: caption,
+      labelLarge: label?.copyWith(
         fontSize: AppDimensions.buttonFontSize,
         fontWeight: FontWeight.w600,
-        letterSpacing: AppDimensions.labelLetterSpacing,
+        letterSpacing: AppDimensions.letterSpacingSubhead,
       ),
+      labelMedium: label,
+      labelSmall: caption,
     );
 
     return ThemeData(
@@ -129,17 +177,33 @@ abstract final class AppTheme {
         clipBehavior: Clip.antiAlias,
       ),
       chipTheme: ChipThemeData(
-        color: WidgetStateColor.resolveWith(_selectionBackground),
-        labelStyle: WidgetStateTextStyle.resolveWith(
-          (states) => textTheme.labelLarge!.copyWith(
-            color: _selectionForeground(states),
+        color: WidgetStateColor.resolveWith(_chipBackground),
+        backgroundColor: AppColors.charcoal,
+        selectedColor: AppColors.slate,
+        secondarySelectedColor: AppColors.slate,
+        disabledColor: AppColors.charcoal,
+        labelStyle: textTheme.labelMedium?.copyWith(
+          color: WidgetStateColor.resolveWith(_chipForeground),
+        ),
+        secondaryLabelStyle: textTheme.labelMedium?.copyWith(
+          color: WidgetStateColor.resolveWith(_chipForeground),
+        ),
+        checkmarkColor: AppColors.white,
+        side: WidgetStateBorderSide.resolveWith(
+          (states) => BorderSide(
+            color:
+                states.contains(WidgetState.selected) &&
+                    !states.contains(WidgetState.disabled)
+                ? AppColors.silver
+                : AppColors.slate,
+            width: AppDimensions.hairlineWidth,
           ),
         ),
-        checkmarkColor: AppColors.obsidian,
-        side: const BorderSide(
-          color: AppColors.slate,
-          width: AppDimensions.hairlineWidth,
-        ),
+        elevation: AppDimensions.flatElevation,
+        pressElevation: AppDimensions.flatElevation,
+        shadowColor: AppColors.transparent,
+        selectedShadowColor: AppColors.transparent,
+        surfaceTintColor: AppColors.transparent,
         shape: const StadiumBorder(),
         padding: const EdgeInsets.symmetric(
           horizontal: AppDimensions.sm,
@@ -194,10 +258,12 @@ abstract final class AppTheme {
         hoverColor: AppColors.transparent,
         focusColor: AppColors.graphite,
         contentPadding: const EdgeInsets.all(AppDimensions.md),
-        labelStyle: const TextStyle(color: AppColors.silver),
-        hintStyle: const TextStyle(color: AppColors.pewter),
-        floatingLabelStyle: const TextStyle(color: AppColors.platinum),
-        errorStyle: const TextStyle(color: AppColors.platinum),
+        labelStyle: textTheme.labelMedium,
+        hintStyle: textTheme.bodyMedium?.copyWith(color: AppColors.pewter),
+        floatingLabelStyle: textTheme.labelMedium?.copyWith(
+          color: AppColors.platinum,
+        ),
+        errorStyle: textTheme.bodySmall?.copyWith(color: AppColors.platinum),
         border: border,
         enabledBorder: border,
         disabledBorder: border.copyWith(
@@ -230,6 +296,24 @@ abstract final class AppTheme {
         shape: StadiumBorder(),
       ),
     );
+  }
+
+  static Color _chipBackground(Set<WidgetState> states) {
+    if (states.contains(WidgetState.disabled)) {
+      return AppColors.charcoal;
+    }
+    return states.contains(WidgetState.selected)
+        ? AppColors.slate
+        : AppColors.charcoal;
+  }
+
+  static Color _chipForeground(Set<WidgetState> states) {
+    if (states.contains(WidgetState.disabled)) {
+      return AppColors.pewter;
+    }
+    return states.contains(WidgetState.selected)
+        ? AppColors.white
+        : AppColors.silver;
   }
 
   static Color _selectionBackground(Set<WidgetState> states) {

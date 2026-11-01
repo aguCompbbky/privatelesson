@@ -21,8 +21,9 @@ class LoginCredentialsForm extends StatefulWidget {
 }
 
 class _LoginCredentialsFormState extends State<LoginCredentialsForm> {
-  final _email = TextEditingController();
-  final _password = TextEditingController();
+  // These text of controllers are used to test the login form, but in a real application, they should be empty by default.
+  final _email = TextEditingController(text: "mustafa@gmail.com");
+  final _password = TextEditingController(text: "123456");
 
   @override
   void dispose() {

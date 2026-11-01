@@ -15,7 +15,7 @@ class AuthPageBody extends StatelessWidget {
     child: SafeArea(
       child: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppDimensions.md),
+          padding: AppDimensions.screenPadding(context),
           child: ConstrainedBox(
             constraints: const BoxConstraints(
               maxWidth: AppDimensions.authFormMaxWidth,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:privatelesson/core/constants/app_dimensions.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/cubit/create_lesson_listing_cubit.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/cubit/create_lesson_listing_state.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/widgets/listing_form_text_field.dart';
@@ -20,19 +22,22 @@ class ListingCertificateFields extends StatelessWidget {
     return Column(
       children: [
         SwitchListTile(
-          title: Text(TextUtils.createListingHasCertificate),
+          title: AppText.body(TextUtils.createListingHasCertificate),
+          contentPadding: EdgeInsets.zero,
           value: state.hasCertificate,
           onChanged: state.isSubmitting
               ? null
               : (value) => cubit.setHasCertificate(value: value),
         ),
-        if (state.hasCertificate)
+        if (state.hasCertificate) ...[
+          const SizedBox(height: AppDimensions.sm),
           ListingFormTextField(
             value: state.certificateDescription,
             label: TextUtils.createListingCertificateDescription,
             enabled: !state.isSubmitting,
             onChanged: cubit.updateCertificateDescription,
           ),
+        ],
       ],
     );
   }

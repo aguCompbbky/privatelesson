@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:privatelesson/core/constants/app_dimensions.dart';
 import 'package:privatelesson/core/constants/color_constant.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 
 /// Visual emphasis of a shared action button.
 enum AppButtonVariant {
@@ -110,13 +111,11 @@ class AppButton extends StatelessWidget {
                         const SizedBox(width: AppDimensions.sm),
                       ],
                       Flexible(
-                        child: Text(
+                        child: AppText.label(
                           label,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.labelLarge
-                              ?.copyWith(
-                                color: foreground,
-                              ),
+                          color: foreground,
+                          style: Theme.of(context).textTheme.labelLarge,
                         ),
                       ),
                     ],

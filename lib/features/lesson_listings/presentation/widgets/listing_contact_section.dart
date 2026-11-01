@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:privatelesson/core/constants/app_dimensions.dart';
 import 'package:privatelesson/core/localization/text_utils.dart';
 import 'package:privatelesson/core/widgets/app_button.dart';
+import 'package:privatelesson/core/widgets/app_text.dart';
 import 'package:privatelesson/features/lesson_listings/domain/entities/teacher_contact_info.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/cubit/lesson_listing_detail_cubit.dart';
 import 'package:privatelesson/features/lesson_listings/presentation/cubit/lesson_listing_detail_state.dart';
@@ -32,10 +33,7 @@ class ListingContactSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          TextUtils.contactTeacher,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+        AppText.subhead(TextUtils.contactTeacher),
         const SizedBox(height: AppDimensions.sm),
         Wrap(
           spacing: AppDimensions.sm,
